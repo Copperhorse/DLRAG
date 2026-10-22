@@ -1,0 +1,1 @@
+Write a function `make_balanced_sampler(y)` for an imbalanced classification dataset. `y` is a tensor of integer class labels (possibly with shape `(N, 1)`). It must return a PyTorch sampler that draws `len(y)` samples per epoch so that, on average, every class is drawn equally often.

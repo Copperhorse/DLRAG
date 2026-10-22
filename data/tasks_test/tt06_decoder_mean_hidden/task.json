@@ -1,0 +1,1 @@
+{"id": "tt06_decoder_mean_hidden", "tier": "transfer", "source": "variation of seq2seq.py Decoder.init_hidden (Chapter 8)"}

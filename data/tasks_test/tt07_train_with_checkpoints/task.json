@@ -1,0 +1,1 @@
+{"id": "tt07_train_with_checkpoints", "tier": "transfer", "source": "variation of stepbystep/v4.py train + save_checkpoint (Chapter 2.1)"}

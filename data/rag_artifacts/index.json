@@ -1,0 +1,10 @@
+{
+  "cfg": {
+    "dense_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "batch_size": 16,
+    "max_seq_len": 512,
+    "rrf_k": 60,
+    "candidate_pool": 50
+  },
+  "num_chunks": 3058
+}

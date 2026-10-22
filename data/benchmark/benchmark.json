@@ -1,0 +1,194 @@
+ [   {
+        "id": "Q01", "topic": "Fundamentals", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "How does feature scaling and standardization affect the loss surface in gradient descent?",
+        "relevant_section_ids": ["Zero Mean and Unit Standard Deviation", "Scaling / Standardizing / Normalizing", "\"Bad\" Feature"]
+    },
+    {
+        "id": "Q02", "topic": "Fundamentals", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "How is Mean Squared Error computed and used as a loss function during batch gradient descent?",
+        "relevant_section_ids": ["Step 2 - Compute the Loss", "Loss"]
+    },
+    {
+        "id": "Q03", "topic": "Fundamentals", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "How does learning rate step size cause parameter updates to overshoot or diverge?",
+        "relevant_section_ids": ["Big Learning Rate", "Very Big Learning Rate", "Learning Rate"]
+    },
+    {
+        "id": "Q04", "topic": "PyTorch Basics", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "What is the difference between sharing data with as_tensor vs copying memory with torch.tensor?",
+        "relevant_section_ids": ["Loading Data, Devices and CUDA", "Tensor"]
+    },
+    {
+        "id": "Q05", "topic": "PyTorch Basics", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "How should trainable parameters be initialized with requires_grad and assigned to a device?",
+        "relevant_section_ids": ["Creating Parameters"]
+    },
+    {
+        "id": "Q06", "topic": "Autograd", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "Why does PyTorch accumulate gradients by default and how do you reset them?",
+        "relevant_section_ids": ["grad", "zero_", "step / zero_grad"]
+    },
+    {
+        "id": "Q07", "topic": "Autograd", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "Why is torch.no_grad required when updating parameters manually using gradients?",
+        "relevant_section_ids": ["no_grad", "Updating Parameters"]
+    },
+    {
+        "id": "Q08", "topic": "Autograd", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "How does PyTorch build and visualize dynamic computation graphs with make_dot?",
+        "relevant_section_ids": ["Dynamic Computation Graph"]
+    },
+    {
+        "id": "Q09", "topic": "Model Architecture", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "What is state_dict in PyTorch and what parameters does it include?",
+        "relevant_section_ids": ["state_dict", "Parameters"]
+    },
+    {
+        "id": "Q10", "topic": "Data Loading", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "How do you wrap tensors using TensorDataset and slice minibatches with DataLoader?",
+        "relevant_section_ids": ["TensorDataset", "DataLoader", "Dataset"]
+    },
+    {
+        "id": "Q11", "topic": "Data Loading", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "How do you handle class imbalance in PyTorch datasets using WeightedRandomSampler?",
+        "relevant_section_ids": ["WeightedRandomSampler", "Imbalanced Dataset"]
+    },
+    {
+        "id": "Q12", "topic": "Classification", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "Why can BCEWithLogitsLoss be used directly with raw logits instead of applying Sigmoid first?",
+        "relevant_section_ids": ["BCEWithLogitsLoss", "Sigmoid", "From Logits to Probabilities"]
+    },
+    {
+        "id": "Q13", "topic": "Classification", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "How does the decision boundary shift when altering classification probability thresholds?",
+        "relevant_section_ids": ["Decision Boundary", "Classification Threshold", "Trade-offs and Curves"]
+    },
+    {
+        "id": "Q14", "topic": "Computer Vision", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "How do convolution operations apply filters, padding, and striding to spatial tensor dimensions?",
+        "relevant_section_ids": ["Convolutions", "Convolving in PyTorch", "Striding", "Padding", "Shape"]
+    },
+    {
+        "id": "Q15", "topic": "Computer Vision", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "How does 2D Dropout provide a regularizing effect in convolutional neural networks?",
+        "relevant_section_ids": ["Dropout", "Two-Dimensional Dropout", "Regularizing Effect"]
+    },
+    {
+        "id": "Q16", "topic": "Optimization", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "How does the Adam optimizer adapt learning rates using exponentially weighted moving averages of gradients?",
+        "relevant_section_ids": ["Adam", "EWMA Meets Gradients", "Adaptive Learning Rate"]
+    },
+    {
+        "id": "Q17", "topic": "Optimization", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "How are epoch and mini-batch learning rate schedulers integrated into the StepByStep class?",
+        "relevant_section_ids": ["Schedulers in StepByStep - Part I", "Schedulers in StepByStep - Part II", "Learning Rate Schedulers"]
+    },
+    {
+        "id": "Q18", "topic": "Model Optimization", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "How is batch normalization implemented in PyTorch models and how does BatchNorm2d track running statistics?",
+        "relevant_section_ids": ["Batch Normalization", "Running Statistics", "BatchNorm2d"]
+    },
+    {
+        "id": "Q19", "topic": "Model Optimization", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "How can gradient clipping be applied to prevent exploding gradients during backpropagation?",
+        "relevant_section_ids": ["Gradient Clipping", "Norm Clipping (or Gradient Scaling)", "Value Clipping", "Clipping with Hooks"]
+    },
+    {
+        "id": "Q20", "topic": "Sequences", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct_api",
+        "query": "How does pack_padded_sequence process variable-length sequences with padding in RNNs?",
+        "relevant_section_ids": ["Variable-Length Dataset", "Variable-Length Sequences", "Packing", "Padding"]
+    },
+    {
+        "id": "Q21", "topic": "Sequences & Attention", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "How does an attention mechanism compute alignment scores, scaled dot products, and context vectors?",
+        "relevant_section_ids": ["Attention Mechanism", "Attention Scores", "Scaled Dot Product", "Computing the Context Vector"]
+    },
+    {
+        "id": "Q22", "topic": "Transformers", "split": "baseline",
+        "difficulty": "baseline", "query_style": "direct",
+        "query": "What is the difference between Batch Normalization and Layer Normalization in Transformer models?",
+        "relevant_section_ids": ["Batch vs Layer", "Layer Normalization"]
+    },
+
+    {
+        "id": "Q23", "topic": "Fundamentals", "split": "challenge",
+        "difficulty": "hard", "query_style": "paraphrase",
+        "query": "Why can putting predictors onto comparable numerical scales make a gradient-based optimizer behave more regularly?",
+        "relevant_section_ids": ["Zero Mean and Unit Standard Deviation", "Scaling / Standardizing / Normalizing"]
+    },
+    {
+        "id": "Q24", "topic": "Fundamentals", "split": "challenge",
+        "difficulty": "hard", "query_style": "implicit_failure_mode",
+        "query": "What failure mode appears when successive parameter updates become so aggressive that they repeatedly jump past the region containing a minimum?",
+        "relevant_section_ids": ["Big Learning Rate", "Very Big Learning Rate"]
+    },
+    {
+        "id": "Q25", "topic": "Fundamentals", "split": "challenge",
+        "difficulty": "hard", "query_style": "process_paraphrase",
+        "query": "At the point where the training loop turns per-example prediction errors into one scalar objective for the batch, what computation is being performed?",
+        "relevant_section_ids": ["Step 2 - Compute the Loss", "Batch , Mini-batch , and Stochastic Gradient Descent"]
+    },
+    {
+        "id": "Q26", "topic": "PyTorch Basics", "split": "challenge",
+        "difficulty": "hard", "query_style": "behavioral",
+        "query": "A NumPy array is modified after conversion and the corresponding tensor changes too. What property of the conversion explains this behavior, and what alternative conversion avoids shared storage?",
+        "relevant_section_ids": ["Loading Data, Devices and CUDA"]
+    },
+    {
+        "id": "Q27", "topic": "PyTorch Basics", "split": "challenge",
+        "difficulty": "hard", "query_style": "procedural_paraphrase",
+        "query": "When constructing weights manually rather than through an nn.Module layer, what settings make them learnable and place them on the intended accelerator?",
+        "relevant_section_ids": ["Creating Parameters"]
+    },
+    {
+        "id": "Q28", "topic": "Autograd", "split": "challenge",
+        "difficulty": "hard", "query_style": "counterfactual",
+        "query": "Suppose backward() is called twice before the accumulated derivatives are cleared. Why do the gradients combine instead of the second result replacing the first, and how does the book clear them?",
+        "relevant_section_ids": ["grad", "zero_", "step / zero_grad"]
+    },
+    {
+        "id": "Q29", "topic": "Model Optimization", "split": "challenge",
+        "difficulty": "hard", "query_style": "implicit_api",
+        "query": "For a mini-batch of colour images, how can normalization be applied separately to each channel using statistics aggregated over the batch and pixel locations?",
+        "relevant_section_ids": ["BatchNorm2d"]
+    },
+    {
+        "id": "Q30", "topic": "Model Optimization", "split": "challenge",
+        "difficulty": "hard", "query_style": "phase_reasoning",
+        "query": "Why would a network use stored estimates at inference time for normalization instead of recomputing them from the current validation mini-batch?",
+        "relevant_section_ids": ["Running Statistics", "Evaluation Phase"]
+    },
+    {
+        "id": "Q31", "topic": "Sequences & Attention", "split": "challenge",
+        "difficulty": "hard", "query_style": "compositional_paraphrase",
+        "query": "In an encoder-decoder attention block, how does the model turn similarity between a query and source states into a weighted summary of source information?",
+        "relevant_section_ids": ["Attention Scores", "Computing the Context Vector", "Attention Mechanism"]
+    },
+    {
+        "id": "Q32", "topic": "Sequences", "split": "challenge",
+        "difficulty": "hard", "query_style": "implicit_api",
+        "query": "When sequences in the same batch have different lengths, what representation lets an RNN skip work on padding while retaining each sequence's true length?",
+        "relevant_section_ids": ["Variable-Length Sequences", "Packing"]
+    }
+]

@@ -1,0 +1,1 @@
+Write a function `make_clipped_train_step_fn(model, loss_fn, optimizer, max_norm)` that builds and returns a function `perform_train_step_fn(x, y)`, like the training-step builders used in the book, but which clips the gradient norm of the model's parameters to `max_norm` before the optimizer updates them. The returned function reports the loss of the mini-batch.

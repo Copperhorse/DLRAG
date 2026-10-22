@@ -1,0 +1,1 @@
+Write a PyTorch module `Encoder(n_features, hidden_dim)` for sequence data given as tensors of shape (N, L, n_features) (batch first): a single-layer GRU. Its `forward(X)` returns the GRU's output for every position of every sequence, shape (N, L, hidden_dim), and keeps the final hidden state of the last call on the module so that a decoder can start from it later.

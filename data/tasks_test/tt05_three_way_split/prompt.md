@@ -1,0 +1,1 @@
+Write a function `three_way_split(n, splits=(70, 15, 15), seed=13)` that randomly splits the indices `0..n-1` into a training, a validation and a test part whose sizes follow the proportions in `splits` (which do not have to add up to one) and that is reproducible for a given `seed`. Return the three parts, in order, as the subset objects PyTorch's random splitting produces.

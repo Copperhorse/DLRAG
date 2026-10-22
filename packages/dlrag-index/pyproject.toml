@@ -1,0 +1,19 @@
+[project]
+name = "dlrag-index"
+version = "0.1.0"
+description = "Hybrid BM25 + dense (fastembed) retrieval and agent tool facade"
+requires-python = ">=3.14"
+dependencies = [
+    "dlrag-core",
+    "fastembed>=0.8.1",
+    "numpy",
+    "onnxruntime-gpu>=1.30",
+    "rank-bm25>=0.2.2",
+]
+
+[tool.uv.sources]
+dlrag-core = { workspace = true }
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"

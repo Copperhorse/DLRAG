@@ -1,0 +1,21 @@
+{
+  "dense_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "num_chunks": 3058,
+  "num_chunks_linked": 3049,
+  "num_chunks_before_filter": 3571,
+  "num_chunks_dropped": 513,
+  "chunk_rejection_reasons": {
+    "Too short/Empty": 454,
+    "Metadata keyword detected": 2,
+    "Header filter: table of contents": 36,
+    "Header filter: acknowledgements": 1,
+    "Header filter: about the author": 1,
+    "Citation/Link chunk": 2,
+    "Low-value/malformed table": 15,
+    "Header filter: further reading": 1,
+    "Low alpha (0.00%)": 1
+  },
+  "pdf_path": "books/Deep Learning with PyTorch Step-by-Step- A Beginners Guide -- Daniel Voigt Godoy -- ( WeLib.org ).pdf",
+  "repo": "git_repo/PyTorchStepByStep",
+  "docling_device": "cuda"
+}

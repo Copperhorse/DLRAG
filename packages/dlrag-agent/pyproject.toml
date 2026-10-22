@@ -1,0 +1,17 @@
+[project]
+name = "dlrag-agent"
+version = "0.1.0"
+description = "Experiment arms (plain / one-shot RAG / agentic tools) built on Agno"
+requires-python = ">=3.14"
+dependencies = [
+    "agno>=3",
+    "openai",
+    "dlrag-index",
+]
+
+[tool.uv.sources]
+dlrag-index = { workspace = true }
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"

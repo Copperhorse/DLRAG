@@ -1,0 +1,1 @@
+Write a PyTorch module `BiEncoder(n_features, hidden_dim)` for sequences of shape (N, L, n_features) (batch first), built like the book's sequence encoder but with a single-layer bidirectional GRU. `forward(X)` returns the outputs of all positions, shape (N, L, 2 * hidden_dim), and keeps the final hidden states of the last call (both directions) on the module.

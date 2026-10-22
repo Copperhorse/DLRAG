@@ -1,0 +1,1 @@
+Write a function `index_splitter(n, splits, seed=13)` that randomly splits the indices `0..n-1` into disjoint subsets whose sizes follow the proportions in `splits` (for example `[80, 20]` or `[.8, .2]`; the numbers do not have to add up to one). It must be reproducible for a given `seed`. Return one subset object per entry of `splits`.

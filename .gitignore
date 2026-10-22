@@ -1,0 +1,24 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# experiment outputs
+data/results/
+finetune/data/
+finetune/out/
+data/rag_artifacts.prev/
+
+# Local assistant config, never published
+CLAUDE.md
+.claude/
+
+# Third-party material: not mine to redistribute (book PDF, cloned companion repo with its own .git)
+books/
+git_repo/

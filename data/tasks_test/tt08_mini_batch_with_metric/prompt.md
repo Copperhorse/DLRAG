@@ -1,0 +1,1 @@
+Write a function `mini_batch_with_metric(device, data_loader, step_fn)` in the style of the book's mini-batch helper. `step_fn(x, y)` processes one mini-batch and returns a pair `(loss, metric)` of numbers. Run `step_fn` over every mini-batch of `data_loader` and return `(mean_loss, mean_metric)`, each the plain average of the per-mini-batch values.

@@ -1,0 +1,1 @@
+Write a function `make_train_step_fn(model, loss_fn, optimizer)` that builds and returns a function `perform_train_step_fn(x, y)`. Calling the returned function must perform one training step on the mini-batch `(x, y)` and report the loss for that step.

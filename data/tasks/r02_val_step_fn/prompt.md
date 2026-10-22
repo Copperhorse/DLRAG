@@ -1,0 +1,1 @@
+Write a function `make_val_step_fn(model, loss_fn)` that builds and returns a function `perform_val_step_fn(x, y)`. Calling the returned function must evaluate the model on the mini-batch `(x, y)` and report the loss, without training the model.

@@ -1,0 +1,1 @@
+{"id": "tx07_one_cycle_training", "tier": "explore", "source": "stepbystep/v4.py set_lr_scheduler with a per-mini-batch scheduler (Chapter 6) used as a library", "needs_repo": true}

@@ -1,0 +1,1 @@
+{"id": "t01_grad_accumulation_step", "tier": "transfer", "source": "variation of helpers.py make_train_step_fn (Chapter 2)"}

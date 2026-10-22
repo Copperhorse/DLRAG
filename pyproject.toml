@@ -1,0 +1,8 @@
+# Virtual workspace root: no package of its own. `uv sync --all-packages` installs every member.
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv]
+# fastembed/rapidocr/docling depend on the CPU `onnxruntime`, which shares its module directory with
+# `onnxruntime-gpu` and would overwrite it. Drop the CPU wheel; dlrag-index depends on onnxruntime-gpu instead.
+override-dependencies = ["onnxruntime; python_version < '0'"]

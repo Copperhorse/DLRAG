@@ -1,0 +1,30 @@
+[project]
+name = "dlrag-eval"
+version = "0.1.0"
+description = "Retrieval evaluation against section-header benchmarks"
+requires-python = ">=3.14"
+dependencies = [
+    "dlrag-agent",
+    "dlrag-index",
+    "matplotlib>=3.11.2",
+    "pytest>=8",
+    "tensorboard>=2.21.0",
+    "torch",
+]
+
+[project.scripts]
+dlrag-eval = "dlrag_eval.retrieval_eval:main"
+dlrag-find-chunks = "dlrag_eval.find_chunks:main"
+dlrag-tasks-validate = "dlrag_eval.validate_tasks:main"
+dlrag-tasks = "dlrag_eval.run_tasks:main"
+dlrag-check-parity = "dlrag_eval.check_parity:main"
+dlrag-tune = "dlrag_eval.tune:main"
+dlrag-analyze = "dlrag_eval.analyze:main"
+
+[tool.uv.sources]
+dlrag-agent = { workspace = true }
+dlrag-index = { workspace = true }
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"

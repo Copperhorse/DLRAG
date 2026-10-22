@@ -1,0 +1,1 @@
+{"id": "x08_image_normalizer", "tier": "explore", "source": "stepbystep/v4.py: make_normalizer + statistics_per_channel (Chapter 4) used as a library", "needs_repo": true}

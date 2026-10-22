@@ -1,0 +1,1 @@
+{"id": "x07_train_with_tricks", "tier": "explore", "source": "stepbystep/v4.py: set_clip_grad_norm + set_lr_scheduler (Chapter 6, 8) used as a library", "needs_repo": true}

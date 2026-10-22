@@ -1,0 +1,12 @@
+[project]
+name = "dlrag-core"
+version = "0.1.0"
+description = "Shared config and data models for dlrag"
+requires-python = ">=3.14"
+dependencies = [
+
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"

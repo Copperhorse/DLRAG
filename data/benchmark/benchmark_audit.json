@@ -1,0 +1,1120 @@
+{
+  "num_queries": 32,
+  "num_chunks": 3573,
+  "missing_reference_count": 0,
+  "generic_reference_count": 26,
+  "exact_query_in_corpus_count": 0,
+  "long_phrase_copy_flag_count": 4,
+  "header_hint_count": 1,
+  "duplicate_queries": [],
+  "rows": [
+    {
+      "id": "Q01",
+      "split": "baseline",
+      "query": "How does feature scaling and standardization affect the loss surface in gradient descent?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.125,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Zero Mean and Unit Standard Deviation",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 3
+        },
+        {
+          "reference": "Scaling / Standardizing / Normalizing",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "scaling"
+          ],
+          "header_token_overlap_ratio": 0.125,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "\"Bad\" Feature",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "feature"
+          ],
+          "header_token_overlap_ratio": 0.125,
+          "chunks_with_header": 5
+        }
+      ]
+    },
+    {
+      "id": "Q02",
+      "split": "baseline",
+      "query": "How is Mean Squared Error computed and used as a loss function during batch gradient descent?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.1,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Step 2 - Compute the Loss",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "loss"
+          ],
+          "header_token_overlap_ratio": 0.1,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "Loss",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "loss"
+          ],
+          "header_token_overlap_ratio": 0.1,
+          "chunks_with_header": 10
+        }
+      ]
+    },
+    {
+      "id": "Q03",
+      "split": "baseline",
+      "query": "How does learning rate step size cause parameter updates to overshoot or diverge?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.2222222222222222,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Big Learning Rate",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "learning",
+            "rate"
+          ],
+          "header_token_overlap_ratio": 0.2222222222222222,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "Very Big Learning Rate",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "learning",
+            "rate"
+          ],
+          "header_token_overlap_ratio": 0.2222222222222222,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "Learning Rate",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "learning",
+            "rate"
+          ],
+          "header_token_overlap_ratio": 0.2222222222222222,
+          "chunks_with_header": 4
+        }
+      ]
+    },
+    {
+      "id": "Q04",
+      "split": "baseline",
+      "query": "What is the difference between sharing data with as_tensor vs copying memory with torch.tensor?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.1,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Loading Data, Devices and CUDA",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "data"
+          ],
+          "header_token_overlap_ratio": 0.1,
+          "chunks_with_header": 23
+        },
+        {
+          "reference": "Tensor",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "tensor"
+          ],
+          "header_token_overlap_ratio": 0.1,
+          "chunks_with_header": 14
+        }
+      ]
+    },
+    {
+      "id": "Q05",
+      "split": "baseline",
+      "query": "How should trainable parameters be initialized with requires_grad and assigned to a device?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.14285714285714285,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Creating Parameters",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "parameters"
+          ],
+          "header_token_overlap_ratio": 0.14285714285714285,
+          "chunks_with_header": 2
+        }
+      ]
+    },
+    {
+      "id": "Q06",
+      "split": "baseline",
+      "query": "Why does PyTorch accumulate gradients by default and how do you reset them?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.0,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "grad",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 11
+        },
+        {
+          "reference": "zero_",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "step / zero_grad",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 9
+        }
+      ]
+    },
+    {
+      "id": "Q07",
+      "split": "baseline",
+      "query": "Why is torch.no_grad required when updating parameters manually using gradients?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.2857142857142857,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "no_grad",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "no_grad"
+          ],
+          "header_token_overlap_ratio": 0.14285714285714285,
+          "chunks_with_header": 3
+        },
+        {
+          "reference": "Updating Parameters",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "parameters",
+            "updating"
+          ],
+          "header_token_overlap_ratio": 0.2857142857142857,
+          "chunks_with_header": 1
+        }
+      ]
+    },
+    {
+      "id": "Q08",
+      "split": "baseline",
+      "query": "How does PyTorch build and visualize dynamic computation graphs with make_dot?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.2857142857142857,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Dynamic Computation Graph",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "computation",
+            "dynamic"
+          ],
+          "header_token_overlap_ratio": 0.2857142857142857,
+          "chunks_with_header": 7
+        }
+      ]
+    },
+    {
+      "id": "Q09",
+      "split": "baseline",
+      "query": "What is state_dict in PyTorch and what parameters does it include?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.25,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "state_dict",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "state_dict"
+          ],
+          "header_token_overlap_ratio": 0.25,
+          "chunks_with_header": 6
+        },
+        {
+          "reference": "Parameters",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "parameters"
+          ],
+          "header_token_overlap_ratio": 0.25,
+          "chunks_with_header": 4
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "split": "baseline",
+      "query": "How do you wrap tensors using TensorDataset and slice minibatches with DataLoader?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.14285714285714285,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "TensorDataset",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "tensordataset"
+          ],
+          "header_token_overlap_ratio": 0.14285714285714285,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "DataLoader",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "dataloader"
+          ],
+          "header_token_overlap_ratio": 0.14285714285714285,
+          "chunks_with_header": 11
+        },
+        {
+          "reference": "Dataset",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 1
+        }
+      ]
+    },
+    {
+      "id": "Q11",
+      "split": "baseline",
+      "query": "How do you handle class imbalance in PyTorch datasets using WeightedRandomSampler?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.14285714285714285,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "WeightedRandomSampler",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "weightedrandomsampler"
+          ],
+          "header_token_overlap_ratio": 0.14285714285714285,
+          "chunks_with_header": 10
+        },
+        {
+          "reference": "Imbalanced Dataset",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 3
+        }
+      ]
+    },
+    {
+      "id": "Q12",
+      "split": "baseline",
+      "query": "Why can BCEWithLogitsLoss be used directly with raw logits instead of applying Sigmoid first?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.125,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "BCEWithLogitsLoss",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "bcewithlogitsloss"
+          ],
+          "header_token_overlap_ratio": 0.125,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "Sigmoid",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "sigmoid"
+          ],
+          "header_token_overlap_ratio": 0.125,
+          "chunks_with_header": 7
+        },
+        {
+          "reference": "From Logits to Probabilities",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "logits"
+          ],
+          "header_token_overlap_ratio": 0.125,
+          "chunks_with_header": 4
+        }
+      ]
+    },
+    {
+      "id": "Q13",
+      "split": "baseline",
+      "query": "How does the decision boundary shift when altering classification probability thresholds?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 5,
+      "phrase_copy_flag": true,
+      "max_relevant_header_token_overlap_ratio": 0.2857142857142857,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Decision Boundary",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "boundary",
+            "decision"
+          ],
+          "header_token_overlap_ratio": 0.2857142857142857,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "Classification Threshold",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "classification"
+          ],
+          "header_token_overlap_ratio": 0.14285714285714285,
+          "chunks_with_header": 3
+        },
+        {
+          "reference": "Trade-offs and Curves",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 1
+        }
+      ]
+    },
+    {
+      "id": "Q14",
+      "split": "baseline",
+      "query": "How do convolution operations apply filters, padding, and striding to spatial tensor dimensions?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.1111111111111111,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Convolutions",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "Convolving in PyTorch",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 8
+        },
+        {
+          "reference": "Striding",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "striding"
+          ],
+          "header_token_overlap_ratio": 0.1111111111111111,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "Padding",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "padding"
+          ],
+          "header_token_overlap_ratio": 0.1111111111111111,
+          "chunks_with_header": 19
+        },
+        {
+          "reference": "Shape",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 1
+        }
+      ]
+    },
+    {
+      "id": "Q15",
+      "split": "baseline",
+      "query": "How does 2D Dropout provide a regularizing effect in convolutional neural networks?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.25,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Dropout",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "dropout"
+          ],
+          "header_token_overlap_ratio": 0.125,
+          "chunks_with_header": 13
+        },
+        {
+          "reference": "Two-Dimensional Dropout",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "dropout"
+          ],
+          "header_token_overlap_ratio": 0.125,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "Regularizing Effect",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "effect",
+            "regularizing"
+          ],
+          "header_token_overlap_ratio": 0.25,
+          "chunks_with_header": 8
+        }
+      ]
+    },
+    {
+      "id": "Q16",
+      "split": "baseline",
+      "query": "How does the Adam optimizer adapt learning rates using exponentially weighted moving averages of gradients?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 5,
+      "phrase_copy_flag": true,
+      "max_relevant_header_token_overlap_ratio": 0.1,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Adam",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "adam"
+          ],
+          "header_token_overlap_ratio": 0.1,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "EWMA Meets Gradients",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "gradients"
+          ],
+          "header_token_overlap_ratio": 0.1,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "Adaptive Learning Rate",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "learning"
+          ],
+          "header_token_overlap_ratio": 0.1,
+          "chunks_with_header": 1
+        }
+      ]
+    },
+    {
+      "id": "Q17",
+      "split": "baseline",
+      "query": "How are epoch and mini-batch learning rate schedulers integrated into the StepByStep class?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 5,
+      "phrase_copy_flag": true,
+      "max_relevant_header_token_overlap_ratio": 0.3333333333333333,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Schedulers in StepByStep - Part I",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "schedulers",
+            "stepbystep"
+          ],
+          "header_token_overlap_ratio": 0.2222222222222222,
+          "chunks_with_header": 7
+        },
+        {
+          "reference": "Schedulers in StepByStep - Part II",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "schedulers",
+            "stepbystep"
+          ],
+          "header_token_overlap_ratio": 0.2222222222222222,
+          "chunks_with_header": 5
+        },
+        {
+          "reference": "Learning Rate Schedulers",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "learning",
+            "rate",
+            "schedulers"
+          ],
+          "header_token_overlap_ratio": 0.3333333333333333,
+          "chunks_with_header": 4
+        }
+      ]
+    },
+    {
+      "id": "Q18",
+      "split": "baseline",
+      "query": "How is batch normalization implemented in PyTorch models and how does BatchNorm2d track running statistics?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.2222222222222222,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Batch Normalization",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "batch",
+            "normalization"
+          ],
+          "header_token_overlap_ratio": 0.2222222222222222,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "Running Statistics",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "running",
+            "statistics"
+          ],
+          "header_token_overlap_ratio": 0.2222222222222222,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "BatchNorm2d",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "batchnorm2d"
+          ],
+          "header_token_overlap_ratio": 0.1111111111111111,
+          "chunks_with_header": 9
+        }
+      ]
+    },
+    {
+      "id": "Q19",
+      "split": "baseline",
+      "query": "How can gradient clipping be applied to prevent exploding gradients during backpropagation?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.25,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Gradient Clipping",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "clipping",
+            "gradient"
+          ],
+          "header_token_overlap_ratio": 0.25,
+          "chunks_with_header": 3
+        },
+        {
+          "reference": "Norm Clipping (or Gradient Scaling)",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "clipping",
+            "gradient"
+          ],
+          "header_token_overlap_ratio": 0.25,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "Value Clipping",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "clipping"
+          ],
+          "header_token_overlap_ratio": 0.125,
+          "chunks_with_header": 3
+        },
+        {
+          "reference": "Clipping with Hooks",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "clipping"
+          ],
+          "header_token_overlap_ratio": 0.125,
+          "chunks_with_header": 5
+        }
+      ]
+    },
+    {
+      "id": "Q20",
+      "split": "baseline",
+      "query": "How does pack_padded_sequence process variable-length sequences with padding in RNNs?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.42857142857142855,
+      "header_hint_flag": true,
+      "reference_details": [
+        {
+          "reference": "Variable-Length Dataset",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "length",
+            "variable"
+          ],
+          "header_token_overlap_ratio": 0.2857142857142857,
+          "chunks_with_header": 8
+        },
+        {
+          "reference": "Variable-Length Sequences",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "length",
+            "sequences",
+            "variable"
+          ],
+          "header_token_overlap_ratio": 0.42857142857142855,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "Packing",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 19
+        },
+        {
+          "reference": "Padding",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "padding"
+          ],
+          "header_token_overlap_ratio": 0.14285714285714285,
+          "chunks_with_header": 19
+        }
+      ]
+    },
+    {
+      "id": "Q21",
+      "split": "baseline",
+      "query": "How does an attention mechanism compute alignment scores, scaled dot products, and context vectors?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.2,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Attention Mechanism",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "attention",
+            "mechanism"
+          ],
+          "header_token_overlap_ratio": 0.2,
+          "chunks_with_header": 3
+        },
+        {
+          "reference": "Attention Scores",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "attention",
+            "scores"
+          ],
+          "header_token_overlap_ratio": 0.2,
+          "chunks_with_header": 7
+        },
+        {
+          "reference": "Scaled Dot Product",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "dot",
+            "scaled"
+          ],
+          "header_token_overlap_ratio": 0.2,
+          "chunks_with_header": 10
+        },
+        {
+          "reference": "Computing the Context Vector",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "context"
+          ],
+          "header_token_overlap_ratio": 0.1,
+          "chunks_with_header": 24
+        }
+      ]
+    },
+    {
+      "id": "Q22",
+      "split": "baseline",
+      "query": "What is the difference between Batch Normalization and Layer Normalization in Transformer models?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.2857142857142857,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Batch vs Layer",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "batch",
+            "layer"
+          ],
+          "header_token_overlap_ratio": 0.2857142857142857,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "Layer Normalization",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "layer",
+            "normalization"
+          ],
+          "header_token_overlap_ratio": 0.2857142857142857,
+          "chunks_with_header": 5
+        }
+      ]
+    },
+    {
+      "id": "Q23",
+      "split": "challenge",
+      "query": "Why can putting predictors onto comparable numerical scales make a gradient-based optimizer behave more regularly?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.0,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Zero Mean and Unit Standard Deviation",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 3
+        },
+        {
+          "reference": "Scaling / Standardizing / Normalizing",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 1
+        }
+      ]
+    },
+    {
+      "id": "Q24",
+      "split": "challenge",
+      "query": "What failure mode appears when successive parameter updates become so aggressive that they repeatedly jump past the region containing a minimum?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.0,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Big Learning Rate",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "Very Big Learning Rate",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 1
+        }
+      ]
+    },
+    {
+      "id": "Q25",
+      "split": "challenge",
+      "query": "At the point where the training loop turns per-example prediction errors into one scalar objective for the batch, what computation is being performed?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.0625,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Step 2 - Compute the Loss",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "Batch , Mini-batch , and Stochastic Gradient Descent",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "batch"
+          ],
+          "header_token_overlap_ratio": 0.0625,
+          "chunks_with_header": 5
+        }
+      ]
+    },
+    {
+      "id": "Q26",
+      "split": "challenge",
+      "query": "A NumPy array is modified after conversion and the corresponding tensor changes too. What property of the conversion explains this behavior, and what alternative conversion avoids shared storage?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.0,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Loading Data, Devices and CUDA",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 23
+        }
+      ]
+    },
+    {
+      "id": "Q27",
+      "split": "challenge",
+      "query": "When constructing weights manually rather than through an nn.Module layer, what settings make them learnable and place them on the intended accelerator?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.0,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Creating Parameters",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 2
+        }
+      ]
+    },
+    {
+      "id": "Q28",
+      "split": "challenge",
+      "query": "Suppose backward() is called twice before the accumulated derivatives are cleared. Why do the gradients combine instead of the second result replacing the first, and how does the book clear them?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.0,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "grad",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 11
+        },
+        {
+          "reference": "zero_",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "step / zero_grad",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 9
+        }
+      ]
+    },
+    {
+      "id": "Q29",
+      "split": "challenge",
+      "query": "For a mini-batch of colour images, how can normalization be applied separately to each channel using statistics aggregated over the batch and pixel locations?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 5,
+      "phrase_copy_flag": true,
+      "max_relevant_header_token_overlap_ratio": 0.0,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "BatchNorm2d",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 9
+        }
+      ]
+    },
+    {
+      "id": "Q30",
+      "split": "challenge",
+      "query": "Why would a network use stored estimates at inference time for normalization instead of recomputing them from the current validation mini-batch?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.0,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Running Statistics",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 1
+        },
+        {
+          "reference": "Evaluation Phase",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 5
+        }
+      ]
+    },
+    {
+      "id": "Q31",
+      "split": "challenge",
+      "query": "In an encoder-decoder attention block, how does the model turn similarity between a query and source states into a weighted summary of source information?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.07142857142857142,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Attention Scores",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "attention"
+          ],
+          "header_token_overlap_ratio": 0.07142857142857142,
+          "chunks_with_header": 7
+        },
+        {
+          "reference": "Computing the Context Vector",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 24
+        },
+        {
+          "reference": "Attention Mechanism",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "attention"
+          ],
+          "header_token_overlap_ratio": 0.07142857142857142,
+          "chunks_with_header": 3
+        }
+      ]
+    },
+    {
+      "id": "Q32",
+      "split": "challenge",
+      "query": "When sequences in the same batch have different lengths, what representation lets an RNN skip work on padding while retaining each sequence's true length?",
+      "missing_references": [],
+      "exact_query_in_corpus": false,
+      "longest_shared_5plus_token_phrase": 0,
+      "phrase_copy_flag": false,
+      "max_relevant_header_token_overlap_ratio": 0.10526315789473684,
+      "header_hint_flag": false,
+      "reference_details": [
+        {
+          "reference": "Variable-Length Sequences",
+          "exists_exactly": true,
+          "header_token_overlap": [
+            "length",
+            "sequences"
+          ],
+          "header_token_overlap_ratio": 0.10526315789473684,
+          "chunks_with_header": 2
+        },
+        {
+          "reference": "Packing",
+          "exists_exactly": true,
+          "header_token_overlap": [],
+          "header_token_overlap_ratio": 0.0,
+          "chunks_with_header": 19
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Implement the method `count_parameters(self)` of the class `StepByStep` (write only the class with this method; `__init__` already exists). The object has a `model`. The method must return how many parameters the model has, as a plain integer.

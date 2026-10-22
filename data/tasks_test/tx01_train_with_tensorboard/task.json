@@ -1,0 +1,1 @@
+{"id": "tx01_train_with_tensorboard", "tier": "explore", "source": "stepbystep/v4.py set_tensorboard (Chapter 2.1) used as a library", "needs_repo": true}

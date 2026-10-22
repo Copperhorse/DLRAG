@@ -1,0 +1,1 @@
+{"id": "tt02_positional_encoding_noscale", "tier": "transfer", "source": "variation of seq2seq.py PositionalEncoding (Chapter 10)"}

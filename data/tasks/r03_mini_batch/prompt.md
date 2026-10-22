@@ -1,0 +1,1 @@
+Write a function `mini_batch(device, data_loader, step_fn)` that runs `step_fn` over every mini-batch produced by `data_loader` and returns a single loss value for the whole pass. `step_fn(x, y)` takes a mini-batch and returns that mini-batch's loss.

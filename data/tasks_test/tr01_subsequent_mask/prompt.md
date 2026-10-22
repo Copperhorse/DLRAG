@@ -1,0 +1,1 @@
+Write a function `subsequent_mask(size)` that returns the boolean mask a decoder uses so that every position can only look at itself and at earlier positions: a tensor with a leading dimension of 1, then `size` x `size`, whose entry `[0, i, j]` is True when `j <= i` and False otherwise.

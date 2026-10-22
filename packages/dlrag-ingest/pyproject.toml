@@ -1,0 +1,24 @@
+[project]
+name = "dlrag-ingest"
+version = "0.1.0"
+description = "Book PDF ingestion pipeline (Docling, chunking, repo linking)"
+requires-python = ">=3.14"
+dependencies = [
+    "dlrag-core",
+    "dlrag-index",
+    "docling>=2.126.0",
+    "langchain-text-splitters>=1.1.2",
+    "rank-bm25>=0.2.2",
+    "tiktoken>=0.14.0",
+]
+
+[project.scripts]
+dlrag-ingest = "dlrag_ingest.cli:main"
+
+[tool.uv.sources]
+dlrag-core = { workspace = true }
+dlrag-index = { workspace = true }
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"

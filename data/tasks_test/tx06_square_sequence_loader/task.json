@@ -1,0 +1,1 @@
+{"id": "tx06_square_sequence_loader", "tier": "explore", "source": "data_generation/square_sequences.py generate_sequences (Chapter 8) used as a library", "needs_repo": true}
