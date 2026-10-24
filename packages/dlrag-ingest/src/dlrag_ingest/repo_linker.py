@@ -17,6 +17,7 @@ Operates on ChunkRecord (chunk_id/section_header/content), not the retired
 SectionRecord -- multiple chunks can share the same section_header when a
 section was split across several chunks; each is linked independently.
 """
+
 from __future__ import annotations
 
 import json
@@ -71,11 +72,13 @@ class RepoAssetIndex:
                 source = "".join(cell.get("source", "")).strip()
                 if not source:
                     continue
-                cells.append(NotebookCell(
-                    cell_type=cell.get("cell_type", "code"),
-                    source=source,
-                    tags=set(_CELL_TAG_IN_SOURCE.findall(source)),
-                ))
+                cells.append(
+                    NotebookCell(
+                        cell_type=cell.get("cell_type", "code"),
+                        source=source,
+                        tags=set(_CELL_TAG_IN_SOURCE.findall(source)),
+                    )
+                )
             self.notebooks[self._rel(nb_path)] = cells
 
     def _scan_scripts(self) -> None:
@@ -123,9 +126,11 @@ class RepoLinker:
                 self._link_semantic(chunk)
         n_linked = sum(1 for c in chunks if c.github_links)
         logger.info(
-            "[Linker] Linked %d/%d chunks to repo assets "
-            "(%d notebooks, %d scripts scanned).",
-            n_linked, len(chunks), len(self.assets.notebooks), len(self.assets.scripts),
+            "[Linker] Linked %d/%d chunks to repo assets (%d notebooks, %d scripts scanned).",
+            n_linked,
+            len(chunks),
+            len(self.assets.notebooks),
+            len(self.assets.scripts),
         )
         return chunks
 
@@ -163,12 +168,14 @@ class RepoLinker:
                 continue
             self._add_link(chunk, nb_path)
             for cell in matched:
-                chunk.repo_code.append(CodeAsset(
-                    file=f"{nb_path} (cell)",
-                    url=self.assets.url_for(nb_path),
-                    code=cell.source,
-                    kind="notebook_cell",
-                ))
+                chunk.repo_code.append(
+                    CodeAsset(
+                        file=f"{nb_path} (cell)",
+                        url=self.assets.url_for(nb_path),
+                        code=cell.source,
+                        kind="notebook_cell",
+                    )
+                )
             wanted -= set().union(*(c.tags for c in matched))
             if not wanted:
                 break
@@ -179,35 +186,35 @@ class RepoLinker:
             if not str(target).startswith(str(self.assets.repo_dir)) or not target.exists():
                 continue
             self._add_link(chunk, rel)
-            chunk.repo_code.append(CodeAsset(
-                file=rel,
-                url=self.assets.url_for(rel),
-                code=target.read_text(encoding="utf-8", errors="ignore").strip(),
-                kind="writefile",
-            ))
+            chunk.repo_code.append(
+                CodeAsset(
+                    file=rel,
+                    url=self.assets.url_for(rel),
+                    code=target.read_text(encoding="utf-8", errors="ignore").strip(),
+                    kind="writefile",
+                )
+            )
 
     def _link_semantic(self, chunk: ChunkRecord) -> None:
         if not self.assets.scripts:
             return
         if self._script_bm25 is None:
             self._script_paths = list(self.assets.scripts)
-            self._script_bm25 = BM25Okapi([
-                self._tokens(f"{p} {c}") for p, c in self.assets.scripts.items()
-            ])
-        scores = self._script_bm25.get_scores(
-            self._tokens(f"{chunk.section_header} {chunk.content[:2000]}")
-        )
+            self._script_bm25 = BM25Okapi([self._tokens(f"{p} {c}") for p, c in self.assets.scripts.items()])
+        scores = self._script_bm25.get_scores(self._tokens(f"{chunk.section_header} {chunk.content[:2000]}"))
         top = int(scores.argmax()) if scores.max() > 0 else -1
         if top < 0:
             return
         rel = self._script_paths[top]
         self._add_link(chunk, rel)
-        chunk.repo_code.append(CodeAsset(
-            file=rel,
-            url=self.assets.url_for(rel),
-            code=self.assets.scripts[rel][: self.cfg.semantic_code_char_cap],
-            kind="semantic",
-        ))
+        chunk.repo_code.append(
+            CodeAsset(
+                file=rel,
+                url=self.assets.url_for(rel),
+                code=self.assets.scripts[rel][: self.cfg.semantic_code_char_cap],
+                kind="semantic",
+            )
+        )
 
     # ---------------------------------------------------------------- utils
     @staticmethod

@@ -1,4 +1,5 @@
 """Read-only, sandboxed browsing of the companion code repository."""
+
 from __future__ import annotations
 
 import ast
@@ -7,7 +8,7 @@ import re
 from pathlib import Path
 
 _SKIP_DIRS = {".git", "__pycache__", ".ipynb_checkpoints", "runs", "images", "plots", "node_modules"}
-_MAP_SKIP = {"config.py", "tensorboardserverextension.py"}   # Colab/TensorBoard plumbing
+_MAP_SKIP = {"config.py", "tensorboardserverextension.py"}  # Colab/TensorBoard plumbing
 _TEXT_SUFFIXES = {".py", ".ipynb", ".md", ".txt", ".yml", ".yaml", ".toml", ".cfg", ".json", ""}
 
 
@@ -30,8 +31,10 @@ class RepoBrowser:
 
     def _iter_files(self, base: Path):
         for p in sorted(base.rglob("*")):
-            if p.is_file() and p.suffix.lower() in _TEXT_SUFFIXES and not (
-                set(p.relative_to(self.root).parts[:-1]) & _SKIP_DIRS
+            if (
+                p.is_file()
+                and p.suffix.lower() in _TEXT_SUFFIXES
+                and not (set(p.relative_to(self.root).parts[:-1]) & _SKIP_DIRS)
             ):
                 yield p
 
@@ -44,8 +47,7 @@ class RepoBrowser:
         except (ValueError, KeyError):
             return raw
         return "\n".join(
-            f"# --- cell {i} ({c.get('cell_type')}) ---\n{''.join(c.get('source', []))}"
-            for i, c in enumerate(cells)
+            f"# --- cell {i} ({c.get('cell_type')}) ---\n{''.join(c.get('source', []))}" for i, c in enumerate(cells)
         )
 
     # ------------------------------------------------------------ repo map
@@ -71,7 +73,9 @@ class RepoBrowser:
             keep = files
         lines = ["Python files of the book's companion repository (import path = file path without .py, with dots)."]
         if not latest_only:
-            lines.append("Where a directory has several numbered versions (v0.py, v1.py, ...), the highest number is the final version used in the book.")
+            lines.append(
+                "Where a directory has several numbered versions (v0.py, v1.py, ...), the highest number is the final version used in the book."
+            )
         # the library files first, so truncation can only cut the less relevant ones
         for p in sorted(keep, key=lambda q: (q.name not in ("helpers.py", "v4.py"), str(q))):
             try:
@@ -82,7 +86,9 @@ class RepoBrowser:
             for node in tree.body:
                 if isinstance(node, ast.ClassDef):
                     entries.append(f"  class {node.name}")
-                    entries += [f"    def {m.name}({ast.unparse(m.args)})" for m in node.body if isinstance(m, ast.FunctionDef)]
+                    entries += [
+                        f"    def {m.name}({ast.unparse(m.args)})" for m in node.body if isinstance(m, ast.FunctionDef)
+                    ]
                 elif isinstance(node, ast.FunctionDef):
                     entries.append(f"  def {node.name}({ast.unparse(node.args)})")
             if entries:
@@ -120,8 +126,11 @@ class RepoBrowser:
         chunk = "\n".join(lines[start - 1 : end_line])
         truncated = len(chunk) > self.max_chars
         return {
-            "path": path, "start_line": start, "total_lines": len(lines),
-            "truncated": truncated, "content": chunk[: self.max_chars],
+            "path": path,
+            "start_line": start,
+            "total_lines": len(lines),
+            "truncated": truncated,
+            "content": chunk[: self.max_chars],
         }
 
     def grep(self, pattern: str, path: str = ".", ignore_case: bool = True) -> dict:
@@ -153,7 +162,7 @@ REPO_TOOL_SCHEMAS = [
     {
         "name": "repo_read_file",
         "description": "Read a file from the repository (notebooks are rendered as numbered cells). "
-                       "Output is capped; use start_line/end_line to page through long files.",
+        "Output is capped; use start_line/end_line to page through long files.",
         "parameters": {
             "type": "object",
             "properties": {

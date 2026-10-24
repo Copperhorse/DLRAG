@@ -3,6 +3,7 @@
 Everything book-specific lives here as data (regexes, path hints), never as
 hard-coded logic, which is what makes the pipeline book-independent.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -14,20 +15,20 @@ DEFAULT_DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 @dataclass
 class PDFConfig:
     path: Path
-    docling_device: str = "auto"          # "auto" | "cuda" | "cpu"
+    docling_device: str = "auto"  # "auto" | "cuda" | "cpu"
     docling_threads: int = 8
-    code_enrichment: bool = True          # Docling CodeFormula model: restores code newlines/indentation (slower, ~1.5 GB VRAM)
-    batch_pages: int = 50                 # Docling converts this many pages at a time (progress + resume); 0 = all at once
-    markdown_path: Path | None = None     # if set, skip Docling and chunk this Markdown (see markdown.md in the artifacts)
+    code_enrichment: bool = True  # Docling CodeFormula model: restores code newlines/indentation (slower, ~1.5 GB VRAM)
+    batch_pages: int = 50  # Docling converts this many pages at a time (progress + resume); 0 = all at once
+    markdown_path: Path | None = None  # if set, skip Docling and chunk this Markdown (see markdown.md in the artifacts)
 
 
 @dataclass
 class RepoConfig:
     local_dir: Path | None = None
-    remote_url: str | None = None         # e.g. https://github.com/org/repo/blob/main
+    remote_url: str | None = None  # e.g. https://github.com/org/repo/blob/main
     include_notebooks: bool = True
     include_scripts: bool = True
-    semantic_fallback: bool = True        # nearest-code-file linking when nothing matches
+    semantic_fallback: bool = True  # nearest-code-file linking when nothing matches
     semantic_code_char_cap: int = 2000
 
 
@@ -35,9 +36,7 @@ class RepoConfig:
 class StructureConfig:
     # Tags inside book text that reference notebook cells, e.g.
     #   "Notebook Cell 3.1", "# Cell 3.1", "Cell_3.1", "Cell 3.1"
-    cell_tag_pattern: str = (
-        r"(?i)(?:notebook\s+cell|cell)[_\s-]?(\d+(?:\.\d+)*)\b"
-    )
+    cell_tag_pattern: str = r"(?i)(?:notebook\s+cell|cell)[_\s-]?(\d+(?:\.\d+)*)\b"
 
 
 @dataclass
@@ -46,7 +45,7 @@ class IndexConfig:
     batch_size: int = 16
     max_seq_len: int = 512
     rrf_k: int = 60
-    candidate_pool: int = 50              # per-retriever candidate pool before RRF
+    candidate_pool: int = 50  # per-retriever candidate pool before RRF
 
 
 @dataclass

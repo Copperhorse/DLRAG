@@ -19,6 +19,7 @@ agent-scratch      -           yes         same as agent-rag-repo (no pre-retrie
 Same finalization policy everywhere: if a run ends without a code block, one more request is made (agents: tool-free, with
 what their tools returned; one-shot: the same prompt again with a reminder to answer with a code block).
 """
+
 from __future__ import annotations
 
 import functools
@@ -43,12 +44,12 @@ from dlrag_index import AgenticIndex  # noqa: E402
 
 ARMS = ("plain", "rag", "rag-repo", "agent-rag", "agent-rag-repo", "agent-scratch")
 AGENT_ARMS = ("agent-rag", "agent-rag-repo", "agent-scratch")
-CONTEXT_ARMS = ("rag", "rag-repo", "agent-rag", "agent-rag-repo")      # get the pre-retrieved passages C
-REPO_MAP_ARMS = ("rag-repo", "agent-rag-repo", "agent-scratch")        # get the repo map R
-REPO_TOOL_ARMS = ("agent-rag-repo", "agent-scratch")                   # may browse the repo
+CONTEXT_ARMS = ("rag", "rag-repo", "agent-rag", "agent-rag-repo")  # get the pre-retrieved passages C
+REPO_MAP_ARMS = ("rag-repo", "agent-rag-repo", "agent-scratch")  # get the repo map R
+REPO_TOOL_ARMS = ("agent-rag-repo", "agent-scratch")  # may browse the repo
 
-CHUNK_CHARS = 2000        # one rendering for pre-retrieved passages AND for the book_search tool
-TOOL_RESULT_CAP = 6000    # chars per tool result (keeps a multi-call run inside the context window)
+CHUNK_CHARS = 2000  # one rendering for pre-retrieved passages AND for the book_search tool
+TOOL_RESULT_CAP = 6000  # chars per tool result (keeps a multi-call run inside the context window)
 
 BASE_INSTRUCTIONS = (
     "You are an expert PyTorch engineer. Write correct, idiomatic Python. "
@@ -57,46 +58,55 @@ BASE_INSTRUCTIONS = (
 
 
 def agent_instructions(arm: str, max_calls: int) -> str:
-    text = (BASE_INSTRUCTIONS + " You may look things up with tools before answering: `book_search(query, top_k)` returns "
-            "passages of the book *Deep Learning with PyTorch Step-by-Step*")
+    text = (
+        BASE_INSTRUCTIONS + " You may look things up with tools before answering: `book_search(query, top_k)` returns "
+        "passages of the book *Deep Learning with PyTorch Step-by-Step*"
+    )
     if arm in REPO_TOOL_ARMS:
-        text += (", and `repo_list`, `repo_grep` and `repo_read_file` browse the book's companion code repository")
+        text += ", and `repo_list`, `repo_grep` and `repo_read_file` browse the book's companion code repository"
     text += ". "
     if arm in CONTEXT_ARMS or arm in REPO_MAP_ARMS:
         text += "Some material is already given in the message; use the tools only if it is not enough. "
-    text += (f"You can make at most {max_calls} tool calls. Check the book's conventions (names, signatures, attributes) "
-             "before answering, then give the final code block.")
+    text += (
+        f"You can make at most {max_calls} tool calls. Check the book's conventions (names, signatures, attributes) "
+        "before answering, then give the final code block."
+    )
     return text
 
 
 @dataclass
 class ModelConfig:
     base_url: str = "http://localhost:8080/v1"
-    model_id: str = "sharp-minicpm5-2b"      # llama-server ignores it
-    temperature: float = 1.0                 # model-card sampling defaults
+    model_id: str = "sharp-minicpm5-2b"  # llama-server ignores it
+    temperature: float = 1.0  # model-card sampling defaults
     top_p: float = 0.95
     top_k: int = 20
     max_tokens: int = 3072
-    thinking: bool = False                   # Sharp template's <think> mode; off = fast, fits 3K tokens
+    thinking: bool = False  # Sharp template's <think> mode; off = fast, fits 3K tokens
     timeout: float = 600.0
 
 
 @dataclass
 class ArmResult:
     text: str
-    tool_calls: list[dict] = field(default_factory=list)   # [{name, args, error}]
+    tool_calls: list[dict] = field(default_factory=list)  # [{name, args, error}]
     input_tokens: int = 0
     output_tokens: int = 0
     duration: float = 0.0
     error: str | None = None
-    forced_final: bool = False   # a second request was needed because no code block came out the first time
+    forced_final: bool = False  # a second request was needed because no code block came out the first time
 
 
 def build_model(cfg: ModelConfig) -> OpenAILike:
     return OpenAILike(
-        id=cfg.model_id, base_url=cfg.base_url, api_key="none",
-        temperature=cfg.temperature, top_p=cfg.top_p, max_tokens=cfg.max_tokens,
-        extra_body={"top_k": cfg.top_k, "chat_template_kwargs": {"enable_thinking": cfg.thinking}}, timeout=cfg.timeout,
+        id=cfg.model_id,
+        base_url=cfg.base_url,
+        api_key="none",
+        temperature=cfg.temperature,
+        top_p=cfg.top_p,
+        max_tokens=cfg.max_tokens,
+        extra_body={"top_k": cfg.top_k, "chat_template_kwargs": {"enable_thinking": cfg.thinking}},
+        timeout=cfg.timeout,
     )
 
 
@@ -150,9 +160,12 @@ def make_tools(index: AgenticIndex, max_calls: int | None, repo: bool, grace: in
             if max_calls is not None and calls["n"] > max_calls:
                 if calls["n"] > max_calls + grace:
                     raise StopAgentRun("tool-call loop: model ignored the tool-call limit")
-                return ("TOOL-CALL LIMIT REACHED. Do not call any more tools. "
-                        "Write your final answer now as one complete Python code block.")
+                return (
+                    "TOOL-CALL LIMIT REACHED. Do not call any more tools. "
+                    "Write your final answer now as one complete Python code block."
+                )
             return fn(*a, **kw)
+
         return wrapper
 
     def book_search(query: str, top_k: int = 3) -> str:
@@ -177,8 +190,15 @@ def make_tools(index: AgenticIndex, max_calls: int | None, repo: bool, grace: in
 
 
 class Arm:
-    def __init__(self, name: str, cfg: ModelConfig, index: AgenticIndex | None = None,
-                 context_k: int = 3, max_tool_calls: int = 8, run_timeout: float = 240.0):
+    def __init__(
+        self,
+        name: str,
+        cfg: ModelConfig,
+        index: AgenticIndex | None = None,
+        context_k: int = 3,
+        max_tool_calls: int = 8,
+        run_timeout: float = 240.0,
+    ):
         if name not in ARMS:
             raise ValueError(f"Unknown arm {name!r}; choose from {ARMS}")
         if name != "plain" and index is None:
@@ -194,7 +214,9 @@ class Arm:
         parts = []
         if self.name in CONTEXT_ARMS:
             hits = self.index.engine.search(spec, top_k=self.context_k)
-            parts.append("Reference passages from the book (they may or may not be relevant):\n\n" + render_passages(hits))
+            parts.append(
+                "Reference passages from the book (they may or may not be relevant):\n\n" + render_passages(hits)
+            )
         if self.name in REPO_MAP_ARMS:
             parts.append(self.index.repo.repo_map())
         parts.append(prompt)
@@ -206,9 +228,13 @@ class Arm:
                 model=build_model(self.cfg),
                 tools=make_tools(self.index, max_calls=self.max_tool_calls, repo=self.name in REPO_TOOL_ARMS),
                 instructions=agent_instructions(self.name, self.max_tool_calls),
-                markdown=False, telemetry=False, retries=0,
+                markdown=False,
+                telemetry=False,
+                retries=0,
             )
-        return Agent(model=build_model(self.cfg), instructions=BASE_INSTRUCTIONS, markdown=False, telemetry=False, retries=0)
+        return Agent(
+            model=build_model(self.cfg), instructions=BASE_INSTRUCTIONS, markdown=False, telemetry=False, retries=0
+        )
 
     # ------------------------------------------------------------------- run
     def run(self, spec: str, prompt: str) -> ArmResult:
@@ -228,7 +254,9 @@ class Arm:
         m = out.metrics
         result = ArmResult(
             text=out.content if isinstance(out.content, str) else str(out.content or ""),
-            tool_calls=[{"name": t.tool_name, "args": t.tool_args, "error": bool(t.tool_call_error)} for t in (out.tools or [])],
+            tool_calls=[
+                {"name": t.tool_name, "args": t.tool_args, "error": bool(t.tool_call_error)} for t in (out.tools or [])
+            ],
             input_tokens=int(getattr(m, "input_tokens", 0) or 0),
             output_tokens=int(getattr(m, "output_tokens", 0) or 0),
             duration=time.time() - t0,
@@ -251,15 +279,20 @@ class Arm:
             evidence = _evidence(out.tools)
             if not evidence:
                 return
-            follow_up = (f"{message}\n\n---\nYou already looked things up. Here is what the tools returned:\n\n{evidence}\n\n---\n"
-                         "Tool use is over. Using the information above, write your final answer now: one complete Python code block.")
+            follow_up = (
+                f"{message}\n\n---\nYou already looked things up. Here is what the tools returned:\n\n{evidence}\n\n---\n"
+                "Tool use is over. Using the information above, write your final answer now: one complete Python code block."
+            )
         else:
-            follow_up = (f"{message}\n\n---\nYour previous reply contained no code block. "
-                         "Write your final answer now: one complete Python code block.")
+            follow_up = (
+                f"{message}\n\n---\nYour previous reply contained no code block. "
+                "Write your final answer now: one complete Python code block."
+            )
         t0 = time.time()
         try:
-            second = Agent(model=build_model(self.cfg), instructions=BASE_INSTRUCTIONS, markdown=False,
-                           telemetry=False, retries=0).run(follow_up)
+            second = Agent(
+                model=build_model(self.cfg), instructions=BASE_INSTRUCTIONS, markdown=False, telemetry=False, retries=0
+            ).run(follow_up)
         except Exception:
             return
         if second.status == RunStatus.error:
@@ -272,8 +305,9 @@ class Arm:
         result.duration += time.time() - t0
 
 
-def make_arm(name: str, cfg: ModelConfig | None = None, artifacts_dir: Path | None = None,
-             repo_dir: Path | None = None, **kw) -> Arm:
+def make_arm(
+    name: str, cfg: ModelConfig | None = None, artifacts_dir: Path | None = None, repo_dir: Path | None = None, **kw
+) -> Arm:
     cfg = cfg or ModelConfig()
     index = None
     if name != "plain":

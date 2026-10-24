@@ -1,4 +1,5 @@
 """Dense encoder backed by fastembed (ONNX runtime, no torch)."""
+
 from __future__ import annotations
 
 import logging

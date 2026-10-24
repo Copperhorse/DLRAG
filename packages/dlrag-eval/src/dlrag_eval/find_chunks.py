@@ -1,4 +1,5 @@
 """Print chunks whose section header contains any of the given terms."""
+
 from __future__ import annotations
 
 import argparse

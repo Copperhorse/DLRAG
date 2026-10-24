@@ -70,10 +70,10 @@ class ChunkConfig:
 
 # Jupyter magics, imports, def/class statements, or a call glued to its parentheses (foo(), np.sum(x)).
 _CODE_LIKE_HEADING = re.compile(
-    r"(?<![\w])%{1,2}[A-Za-z_]"                       # %run, %load_ext, %%writefile (also escaped: %load\_ext)
+    r"(?<![\w])%{1,2}[A-Za-z_]"  # %run, %load_ext, %%writefile (also escaped: %load\_ext)
     r"|^\s*import\s+\w|^\s*from\s+[\w.]+\s+import\b"
     r"|^\s*(?:def|class)\s+\w+"
-    r"|\b[A-Za-z_][\w.]*\([^)\s][^)]*\)"             # call syntax: no space before "("
+    r"|\b[A-Za-z_][\w.]*\([^)\s][^)]*\)"  # call syntax: no space before "("
 )
 
 
@@ -170,9 +170,7 @@ class MarkdownChunker:
     # A. MASKING UTILITIES (Protection)
     # -----------------------------------------------------------------
 
-    def _mask_content(
-        self, text: str
-    ) -> Tuple[str, Dict[str, Tuple[str, ContentType]]]:
+    def _mask_content(self, text: str) -> Tuple[str, Dict[str, Tuple[str, ContentType]]]:
         mask_store = {}
         masked_text = text
 
@@ -200,9 +198,7 @@ class MarkdownChunker:
         for line in lines:
             line_str = line.strip()
 
-            if not line_str or (
-                line_str.startswith("__MASK_") and line_str.endswith("__")
-            ):
+            if not line_str or (line_str.startswith("__MASK_") and line_str.endswith("__")):
                 new_lines.append(line)
                 continue
 
@@ -230,17 +226,15 @@ class MarkdownChunker:
             match = re.match(r"^(#{1,6})\s+(.*)", line)
             is_mask = "__MASK_" in line and line.strip().endswith("__")
 
-            if match and not is_mask and not (
-                self.config.demote_code_like_headings and looks_like_code(match.group(2))
+            if (
+                match
+                and not is_mask
+                and not (self.config.demote_code_like_headings and looks_like_code(match.group(2)))
             ):
                 if current_content:
                     header_text = header_stack.get(current_level, "Root")
                     parent_text = next(
-                        (
-                            header_stack[k]
-                            for k in range(current_level - 1, 0, -1)
-                            if k in header_stack
-                        ),
+                        (header_stack[k] for k in range(current_level - 1, 0, -1) if k in header_stack),
                         None,
                     )
                     top_text = header_stack[min(header_stack)] if header_stack else header_text
@@ -271,11 +265,7 @@ class MarkdownChunker:
         if current_content:
             header_text = header_stack.get(current_level, "Root")
             parent_text = next(
-                (
-                    header_stack[k]
-                    for k in range(current_level - 1, 0, -1)
-                    if k in header_stack
-                ),
+                (header_stack[k] for k in range(current_level - 1, 0, -1) if k in header_stack),
                 None,
             )
             top_text = header_stack[min(header_stack)] if header_stack else header_text
@@ -315,10 +305,7 @@ class MarkdownChunker:
             if part in mask_store:
                 original_content, c_type = mask_store[part]
 
-                if (
-                    c_type == ContentType.TABLE
-                    and count_tokens(original_content) > self.config.max_chunk_tokens
-                ):
+                if c_type == ContentType.TABLE and count_tokens(original_content) > self.config.max_chunk_tokens:
                     sub_texts = (
                         self.splitter.split_text(original_content)
                         if hasattr(self.splitter, "split_text")
@@ -392,16 +379,9 @@ class MarkdownChunker:
                 buffer = chunk
                 continue
 
-            diff_header = (
-                buffer["metadata"]["section_header"]
-                != chunk["metadata"]["section_header"]
-            )
-            diff_type = (
-                buffer["metadata"]["content_type"] != chunk["metadata"]["content_type"]
-            )
-            too_big = (
-                buffer["estimated_tokens"] + chunk["estimated_tokens"]
-            ) > self.config.max_chunk_tokens
+            diff_header = buffer["metadata"]["section_header"] != chunk["metadata"]["section_header"]
+            diff_type = buffer["metadata"]["content_type"] != chunk["metadata"]["content_type"]
+            too_big = (buffer["estimated_tokens"] + chunk["estimated_tokens"]) > self.config.max_chunk_tokens
 
             if diff_header or diff_type or too_big:
                 merged.append(buffer)
@@ -574,8 +554,6 @@ if __name__ == "__main__":
     )
 
     if key_chunk and "1. Go to" in key_chunk["content"]:
-        print(
-            "\n✅ SUCCESS: Numbered lists were PRESERVED as content (not converted to headers)."
-        )
+        print("\n✅ SUCCESS: Numbered lists were PRESERVED as content (not converted to headers).")
     else:
         print("\n❌ FAILURE: Numbered lists are missing or converted incorrectly.")

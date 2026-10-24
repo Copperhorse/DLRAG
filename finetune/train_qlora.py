@@ -9,6 +9,7 @@ bitsandbytes. The chat template is the one extracted from the Sharp GGUF so trai
 Fairness notes (see README.md): the base must be the HF weights the GGUF arms were made from
 (`openbmb/MiniCPM5-2B`); the thinking mode is OFF in training formatting, as in the evaluation runs.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -44,10 +45,18 @@ def load_model_unsloth(args):
     from unsloth import FastLanguageModel  # must be imported before transformers/trl/peft
 
     model, tokenizer = FastLanguageModel.from_pretrained(
-        model_name=args.base_model, max_seq_length=args.max_seq_len, load_in_4bit=True, dtype=None)
+        model_name=args.base_model, max_seq_length=args.max_seq_len, load_in_4bit=True, dtype=None
+    )
     model = FastLanguageModel.get_peft_model(
-        model, r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=0.0, bias="none",
-        target_modules=TARGET_MODULES, use_gradient_checkpointing="unsloth", random_state=args.seed)
+        model,
+        r=args.lora_r,
+        lora_alpha=args.lora_alpha,
+        lora_dropout=0.0,
+        bias="none",
+        target_modules=TARGET_MODULES,
+        use_gradient_checkpointing="unsloth",
+        random_state=args.seed,
+    )
     return model, tokenizer
 
 
@@ -58,15 +67,27 @@ def load_model_plain(args):
 
     bf16 = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
     bnb = BitsAndBytesConfig(
-        load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True,
-        bnb_4bit_compute_dtype=torch.bfloat16 if bf16 else torch.float16)
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_compute_dtype=torch.bfloat16 if bf16 else torch.float16,
+    )
     tokenizer = AutoTokenizer.from_pretrained(args.base_model, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
-        args.base_model, quantization_config=bnb, device_map="auto", trust_remote_code=True)
+        args.base_model, quantization_config=bnb, device_map="auto", trust_remote_code=True
+    )
     model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=True)
-    model = get_peft_model(model, LoraConfig(
-        r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=0.0, bias="none",
-        target_modules=TARGET_MODULES, task_type="CAUSAL_LM"))
+    model = get_peft_model(
+        model,
+        LoraConfig(
+            r=args.lora_r,
+            lora_alpha=args.lora_alpha,
+            lora_dropout=0.0,
+            bias="none",
+            target_modules=TARGET_MODULES,
+            task_type="CAUSAL_LM",
+        ),
+    )
     return model, tokenizer
 
 
@@ -82,8 +103,10 @@ def build_dataset(args, tokenizer):
         return tokenizer.apply_chat_template(r["messages"], tokenize=False, enable_thinking=False)
 
     texts = [to_text(r) for r in rows]
-    print(f"{len(texts)} training examples; first QA example as the model will see it:\n"
-          + next(t for r, t in zip(rows, texts) if r["kind"] == "qa")[:800])
+    print(
+        f"{len(texts)} training examples; first QA example as the model will see it:\n"
+        + next(t for r, t in zip(rows, texts) if r["kind"] == "qa")[:800]
+    )
     return Dataset.from_dict({"text": texts})
 
 
@@ -100,11 +123,25 @@ def main() -> None:
     dataset = build_dataset(args, tokenizer)
     bf16 = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
     cfg_kwargs = dict(
-        output_dir=str(args.out / "checkpoints"), num_train_epochs=args.epochs, max_steps=args.max_steps,
-        per_device_train_batch_size=args.batch_size, gradient_accumulation_steps=args.grad_accum,
-        learning_rate=args.lr, lr_scheduler_type="cosine", warmup_ratio=0.03, weight_decay=0.01,
-        optim="adamw_8bit", bf16=bf16, fp16=not bf16, logging_steps=10, save_strategy="no",
-        seed=args.seed, report_to="none", dataset_text_field="text", packing=False)
+        output_dir=str(args.out / "checkpoints"),
+        num_train_epochs=args.epochs,
+        max_steps=args.max_steps,
+        per_device_train_batch_size=args.batch_size,
+        gradient_accumulation_steps=args.grad_accum,
+        learning_rate=args.lr,
+        lr_scheduler_type="cosine",
+        warmup_ratio=0.03,
+        weight_decay=0.01,
+        optim="adamw_8bit",
+        bf16=bf16,
+        fp16=not bf16,
+        logging_steps=10,
+        save_strategy="no",
+        seed=args.seed,
+        report_to="none",
+        dataset_text_field="text",
+        packing=False,
+    )
     # TRL renamed max_seq_length -> max_length in newer releases.
     params = inspect.signature(SFTConfig.__init__).parameters
     cfg_kwargs["max_length" if "max_length" in params else "max_seq_length"] = args.max_seq_len
@@ -124,11 +161,16 @@ def main() -> None:
     if args.no_unsloth:
         merged_dir = args.out / "merged-16bit"
         from peft import AutoPeftModelForCausalLM
-        merged = AutoPeftModelForCausalLM.from_pretrained(str(adapter_dir), torch_dtype=torch.float16, trust_remote_code=True)
+
+        merged = AutoPeftModelForCausalLM.from_pretrained(
+            str(adapter_dir), torch_dtype=torch.float16, trust_remote_code=True
+        )
         merged.merge_and_unload().save_pretrained(str(merged_dir))
         tokenizer.save_pretrained(str(merged_dir))
-        print(f"Merged fp16 model in {merged_dir}. Convert with llama.cpp:\n"
-              f"  python convert_hf_to_gguf.py {merged_dir} --outtype {args.quant} --outfile {args.out}/model-{args.quant}.gguf")
+        print(
+            f"Merged fp16 model in {merged_dir}. Convert with llama.cpp:\n"
+            f"  python convert_hf_to_gguf.py {merged_dir} --outtype {args.quant} --outfile {args.out}/model-{args.quant}.gguf"
+        )
     else:
         model.save_pretrained_gguf(str(args.out / "gguf"), tokenizer, quantization_method=args.quant)
         print(f"GGUF ({args.quant}) written under {args.out / 'gguf'}")

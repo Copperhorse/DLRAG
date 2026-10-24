@@ -10,6 +10,7 @@ Same knowledge the RAG arms can reach (book chunks + repo code), nothing else. I
     uv run python finetune/build_dataset.py --dry-run
     uv run python finetune/build_dataset.py            # -> finetune/data/train.jsonl
 """
+
 from __future__ import annotations
 
 import argparse
@@ -20,7 +21,7 @@ import re
 from pathlib import Path
 
 REPO_SKIP_DIRS = {".git", "__pycache__", ".ipynb_checkpoints", "runs", "images", "plots", "revision"}
-MAX_CHARS = 6000            # per example; ~1.5K tokens, well inside max_seq_len
+MAX_CHARS = 6000  # per example; ~1.5K tokens, well inside max_seq_len
 
 
 _LINE_NO = re.compile(r"^(\s*)(\d{1,3})(\s+)(.*)$")
@@ -61,7 +62,7 @@ def book_examples(chunks_path: Path, stats: dict | None = None):
         if len(content) < 80:
             stats["too_short"] = stats.get("too_short", 0) + 1
             continue
-        if header == "Output":                        # raw cell outputs (tensors, arrays): little knowledge
+        if header == "Output":  # raw cell outputs (tensors, arrays): little knowledge
             stats["cell_output"] = stats.get("cell_output", 0) + 1
             continue
         if c["content_type"] == "code" and _is_flattened_code(content):
@@ -81,11 +82,13 @@ def book_examples(chunks_path: Path, stats: dict | None = None):
         crumb = " > ".join(crumb_parts)
         yield {"kind": "doc", "text": f"# Book section: {crumb}\n\n{content}"[:MAX_CHARS]}
         if c["content_type"] == "code":
-            q = f"Show the code from the book *Deep Learning with PyTorch Step-by-Step* for the section \"{header}\"."
+            q = f'Show the code from the book *Deep Learning with PyTorch Step-by-Step* for the section "{header}".'
         else:
             q = f"Explain, following the book *Deep Learning with PyTorch Step-by-Step*: {header}"
-        yield {"kind": "qa", "messages": [{"role": "user", "content": q},
-                                          {"role": "assistant", "content": content[:MAX_CHARS]}]}
+        yield {
+            "kind": "qa",
+            "messages": [{"role": "user", "content": q}, {"role": "assistant", "content": content[:MAX_CHARS]}],
+        }
 
 
 def _notebook_text(path: Path) -> str:
@@ -104,11 +107,11 @@ def _repo_files(repo: Path):
             yield p
 
 
-REPO_SKIP_FILES = {"config.py", "tensorboardserverextension.py"}   # Colab/TensorBoard plumbing, not book content
+REPO_SKIP_FILES = {"config.py", "tensorboardserverextension.py"}  # Colab/TensorBoard plumbing, not book content
 
 
 def repo_examples(repo: Path):
-    latest_defs: dict[str, tuple[str, str, str]] = {}   # qualified name -> (file, name, source); later versions win
+    latest_defs: dict[str, tuple[str, str, str]] = {}  # qualified name -> (file, name, source); later versions win
     for p in _repo_files(repo):
         if p.name in REPO_SKIP_FILES:
             continue
@@ -116,8 +119,8 @@ def repo_examples(repo: Path):
         text = _notebook_text(p) if p.suffix == ".ipynb" else p.read_text(encoding="utf-8", errors="replace")
         if not text.strip():
             continue
-        for i in range(0, len(text), MAX_CHARS):               # long files -> several docs
-            yield {"kind": "doc", "text": f"# Repository file: {rel}\n\n{text[i:i + MAX_CHARS]}"}
+        for i in range(0, len(text), MAX_CHARS):  # long files -> several docs
+            yield {"kind": "doc", "text": f"# Repository file: {rel}\n\n{text[i : i + MAX_CHARS]}"}
         if p.suffix != ".py":
             continue
         try:
@@ -128,15 +131,24 @@ def repo_examples(repo: Path):
             if isinstance(node, ast.ClassDef):
                 for m in node.body:
                     if isinstance(m, ast.FunctionDef):
-                        latest_defs[f"{p.parent.name}/{node.name}.{m.name}"] = (rel, f"{node.name}.{m.name}", ast.get_source_segment(text, m) or "")
+                        latest_defs[f"{p.parent.name}/{node.name}.{m.name}"] = (
+                            rel,
+                            f"{node.name}.{m.name}",
+                            ast.get_source_segment(text, m) or "",
+                        )
             elif isinstance(node, ast.FunctionDef):
                 latest_defs[f"{p.parent.name}/{node.name}"] = (rel, node.name, ast.get_source_segment(text, node) or "")
     for rel, name, src in latest_defs.values():
         if len(src) < 60:
             continue
         q = f"Show the implementation of `{name}` from the companion repository of *Deep Learning with PyTorch Step-by-Step* (file `{rel}`)."
-        yield {"kind": "qa", "messages": [{"role": "user", "content": q},
-                                          {"role": "assistant", "content": f"```python\n{src[:MAX_CHARS]}\n```"}]}
+        yield {
+            "kind": "qa",
+            "messages": [
+                {"role": "user", "content": q},
+                {"role": "assistant", "content": f"```python\n{src[:MAX_CHARS]}\n```"},
+            ],
+        }
 
 
 def _unique_prompts(rows: list[dict], stats: dict) -> list[dict]:

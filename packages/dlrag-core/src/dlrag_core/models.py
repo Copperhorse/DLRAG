@@ -1,4 +1,5 @@
 """Data models for chunks, sections, and linked code assets."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

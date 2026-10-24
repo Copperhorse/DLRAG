@@ -1,4 +1,5 @@
 """`dlrag-tasks`: run an experiment arm over the book-derived tasks and score it with the tests."""
+
 from __future__ import annotations
 
 import argparse
@@ -23,7 +24,9 @@ def summarize(rows: list[dict]) -> str:
     for r in rows:
         groups[r["tier"]].append(r)
         groups["ALL"].append(r)
-    lines = [f"{'tier':<10}{'runs':>5}{'behavior%':>11}{'all%':>7}{'tools/run':>11}{'out_tok':>9}{'sec/run':>9}{'errors':>8}{'forced%':>9}"]
+    lines = [
+        f"{'tier':<10}{'runs':>5}{'behavior%':>11}{'all%':>7}{'tools/run':>11}{'out_tok':>9}{'sec/run':>9}{'errors':>8}{'forced%':>9}"
+    ]
     for tier in [t for t in TIERS if t in groups] + ["ALL"]:
         g = groups[tier]
         n = len(g)
@@ -46,7 +49,9 @@ def compare(paths: list[Path]) -> str:
         rows = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
         if rows:
             runs.setdefault(rows[0]["label"], []).extend(rows)
-    out = [f"{'label':<14}{'tier':<10}{'runs':>5}{'all%':>7}{'behav%':>8}{'tools/run':>11}{'out_tok':>9}{'sec/run':>9}{'errors':>8}{'forced%':>9}"]
+    out = [
+        f"{'label':<14}{'tier':<10}{'runs':>5}{'all%':>7}{'behav%':>8}{'tools/run':>11}{'out_tok':>9}{'sec/run':>9}{'errors':>8}{'forced%':>9}"
+    ]
     for tier in TIERS + ("ALL",):
         for label, rows in runs.items():
             g = [r for r in rows if tier == "ALL" or r["tier"] == tier]
@@ -76,32 +81,68 @@ def compare(paths: list[Path]) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--protocol", choices=("fair", "exploratory"), default="fair",
-                    help="fair (default): information-equalized arms, see PROTOCOL.md; exploratory: the superseded first-round arms")
-    ap.add_argument("--arm", choices=sorted(set(fair.ARMS) | set(exploratory.ARMS)),
-                    help="fair: plain | rag | rag-repo | agent-rag | agent-rag-repo | agent-scratch;  "
-                         "exploratory: plain | rag | rag-repo | agent-book | agent")
+    ap.add_argument(
+        "--protocol",
+        choices=("fair", "exploratory"),
+        default="fair",
+        help="fair (default): information-equalized arms, see PROTOCOL.md; exploratory: the superseded first-round arms",
+    )
+    ap.add_argument(
+        "--arm",
+        choices=sorted(set(fair.ARMS) | set(exploratory.ARMS)),
+        help="fair: plain | rag | rag-repo | agent-rag | agent-rag-repo | agent-scratch;  "
+        "exploratory: plain | rag | rag-repo | agent-book | agent",
+    )
     ap.add_argument("--label", default=None, help="name for the run (e.g. base, finetuned); default = arm")
     ap.add_argument("--samples", type=int, default=1, help="samples per task (for pass@1 averaging)")
     ap.add_argument("--tasks", nargs="*", help="task id prefixes (default: all)")
     ap.add_argument("--tasks-dir", type=Path, default=DEFAULT_TASKS_DIR)
     ap.add_argument("--base-url", default=ModelConfig.base_url)
-    ap.add_argument("--request-timeout", type=float, default=ModelConfig.timeout, help="timeout in seconds of one model request (raise it when thinking is on)")
-    ap.add_argument("--model-id", default=ModelConfig.model_id, help="model name sent to the server and recorded in every result row")
+    ap.add_argument(
+        "--request-timeout",
+        type=float,
+        default=ModelConfig.timeout,
+        help="timeout in seconds of one model request (raise it when thinking is on)",
+    )
+    ap.add_argument(
+        "--model-id",
+        default=ModelConfig.model_id,
+        help="model name sent to the server and recorded in every result row",
+    )
     ap.add_argument("--temperature", type=float, default=ModelConfig.temperature)
     ap.add_argument("--max-tokens", type=int, default=ModelConfig.max_tokens)
-    ap.add_argument("--thinking", action="store_true", help="enable the model's <think> mode (slow; raise --max-tokens)")
+    ap.add_argument(
+        "--thinking", action="store_true", help="enable the model's <think> mode (slow; raise --max-tokens)"
+    )
     ap.add_argument("--artifacts", type=Path, default=Path("data/rag_artifacts"))
     ap.add_argument("--repo", type=Path, default=Path("git_repo/PyTorchStepByStep"))
-    ap.add_argument("--context-k", "--rag-top-k", dest="context_k", type=int, default=3,
-                    help="number of pre-retrieved book passages (one-shot arms and the agents' initial context)")
+    ap.add_argument(
+        "--context-k",
+        "--rag-top-k",
+        dest="context_k",
+        type=int,
+        default=3,
+        help="number of pre-retrieved book passages (one-shot arms and the agents' initial context)",
+    )
     ap.add_argument("--max-tool-calls", type=int, default=8)
-    ap.add_argument("--force-final", action="store_true",
-                    help="exploratory protocol only (the fair protocol always finalizes every arm the same way)")
-    ap.add_argument("--run-timeout", type=float, default=240.0, help="wall-clock cap per run in seconds (a timed-out run counts as a failure)")
+    ap.add_argument(
+        "--force-final",
+        action="store_true",
+        help="exploratory protocol only (the fair protocol always finalizes every arm the same way)",
+    )
+    ap.add_argument(
+        "--run-timeout",
+        type=float,
+        default=240.0,
+        help="wall-clock cap per run in seconds (a timed-out run counts as a failure)",
+    )
     ap.add_argument("--out", type=Path, default=Path("data/results"))
-    ap.add_argument("--summarize", type=Path, nargs="+",
-                    help="only print the summary of existing results .jsonl file(s); several files = comparison table")
+    ap.add_argument(
+        "--summarize",
+        type=Path,
+        nargs="+",
+        help="only print the summary of existing results .jsonl file(s); several files = comparison table",
+    )
     args = ap.parse_args()
 
     if args.summarize:
@@ -113,21 +154,42 @@ def main() -> None:
     if not args.arm:
         ap.error("--arm is required unless --summarize is used")
 
-    cfg = ModelConfig(base_url=args.base_url, model_id=args.model_id, temperature=args.temperature, max_tokens=args.max_tokens, thinking=args.thinking, timeout=args.request_timeout)
+    cfg = ModelConfig(
+        base_url=args.base_url,
+        model_id=args.model_id,
+        temperature=args.temperature,
+        max_tokens=args.max_tokens,
+        thinking=args.thinking,
+        timeout=args.request_timeout,
+    )
     if args.protocol == "exploratory":
         if args.arm not in exploratory.ARMS:
             ap.error(f"--arm {args.arm} is not an exploratory arm {exploratory.ARMS}")
-        arm = exploratory.make_arm(args.arm, cfg, artifacts_dir=args.artifacts, repo_dir=args.repo,
-                                   rag_top_k=args.context_k, max_tool_calls=args.max_tool_calls,
-                                   run_timeout=args.run_timeout, force_final=args.force_final)
+        arm = exploratory.make_arm(
+            args.arm,
+            cfg,
+            artifacts_dir=args.artifacts,
+            repo_dir=args.repo,
+            rag_top_k=args.context_k,
+            max_tool_calls=args.max_tool_calls,
+            run_timeout=args.run_timeout,
+            force_final=args.force_final,
+        )
     else:
         if args.arm not in fair.ARMS:
             ap.error(f"--arm {args.arm} is not a fair-protocol arm {fair.ARMS}")
         if args.force_final:
             ap.error("--force-final only applies to --protocol exploratory")
-        arm = fair.make_arm(args.arm, cfg, artifacts_dir=args.artifacts, repo_dir=args.repo,
-                            context_k=args.context_k, max_tool_calls=args.max_tool_calls, run_timeout=args.run_timeout)
-    if (args.tasks_dir / MANIFEST_NAME).exists():   # a frozen task set (the test set) must be untouched
+        arm = fair.make_arm(
+            args.arm,
+            cfg,
+            artifacts_dir=args.artifacts,
+            repo_dir=args.repo,
+            context_k=args.context_k,
+            max_tool_calls=args.max_tool_calls,
+            run_timeout=args.run_timeout,
+        )
+    if (args.tasks_dir / MANIFEST_NAME).exists():  # a frozen task set (the test set) must be untouched
         diff = verify_manifest(args.tasks_dir)
         if diff:
             raise SystemExit("Frozen task set was modified since MANIFEST.sha256 was written:\n  " + "\n  ".join(diff))
@@ -144,18 +206,33 @@ def main() -> None:
                 code = extract_code(res.text)
                 outcome = run_tests(task, code)
                 row = {
-                    "label": label, "arm": args.arm, "model": args.model_id, "thinking": args.thinking, "max_tokens": args.max_tokens, "task_id": task.id, "tier": task.tier, "sample": s,
-                    "response": res.text, "code": code, **outcome.to_dict(),
-                    "tool_calls": res.tool_calls, "input_tokens": res.input_tokens,
-                    "output_tokens": res.output_tokens, "duration": res.duration, "error": res.error,
+                    "label": label,
+                    "arm": args.arm,
+                    "model": args.model_id,
+                    "thinking": args.thinking,
+                    "max_tokens": args.max_tokens,
+                    "task_id": task.id,
+                    "tier": task.tier,
+                    "sample": s,
+                    "response": res.text,
+                    "code": code,
+                    **outcome.to_dict(),
+                    "tool_calls": res.tool_calls,
+                    "input_tokens": res.input_tokens,
+                    "output_tokens": res.output_tokens,
+                    "duration": res.duration,
+                    "error": res.error,
                     "forced_final": res.forced_final,
                 }
                 rows.append(row)
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")
                 f.flush()
-                print(f"{task.id:<30} s{s} behavior={outcome.pass_behavior!s:<5} all={outcome.pass_all!s:<5} "
-                      f"tools={len(res.tool_calls)} {res.duration:5.1f}s"
-                      + (f"  ERR {res.error[:80]}" if res.error else ""), flush=True)
+                print(
+                    f"{task.id:<30} s{s} behavior={outcome.pass_behavior!s:<5} all={outcome.pass_all!s:<5} "
+                    f"tools={len(res.tool_calls)} {res.duration:5.1f}s"
+                    + (f"  ERR {res.error[:80]}" if res.error else ""),
+                    flush=True,
+                )
     print("\n" + summarize(rows) + f"\n\nResults: {path}")
 
 

@@ -1,4 +1,5 @@
 """Hybrid retrieval: BM25 (lexical) + Dense (neural dense) fused with RRF."""
+
 from __future__ import annotations
 
 import json
@@ -13,12 +14,14 @@ from dlrag_core.config import IndexConfig
 from dlrag_core.models import ChunkRecord, CodeAsset
 from dlrag_index.encoders import DenseEncoder
 
-_STOPWORDS = frozenset("""
+_STOPWORDS = frozenset(
+    """
     a an the this that these those is are was were be been being
     of to for on with in and or as by at from into
     what which who whom how why can does do did doesn't don't didn't
     it its it's we you your our their his her they them i
-""".split())
+""".split()
+)
 
 _TOKEN_RE = re.compile(r"[a-z0-9_]+")
 
@@ -62,7 +65,7 @@ class SearchHit:
 @dataclass
 class RetrievalBundle:
     hits: list[SearchHit]
-    bm25_pool: list[tuple[str, float]]      # (chunk_id, score)
+    bm25_pool: list[tuple[str, float]]  # (chunk_id, score)
     dense_pool: list[tuple[str, float]]
 
 
@@ -72,9 +75,7 @@ class HybridSearchEngine:
         self.chunks = chunks
 
         # BM25 tokenized corpus using hierarchical text
-        self.tokenized_corpus = [
-            _tokenize(c.embedding_text) for c in self.chunks
-        ]
+        self.tokenized_corpus = [_tokenize(c.embedding_text) for c in self.chunks]
         self.bm25 = BM25Okapi(self.tokenized_corpus)
 
         self.dense = DenseEncoder(
@@ -87,9 +88,7 @@ class HybridSearchEngine:
         passages = [c.embedding_text for c in self.chunks]
         self.dense_indices = np.array(self.dense.encode(passages), dtype=np.float32)
 
-    def search_with_pools(
-        self, query: str, top_k: int = 5, pool_size: int | None = None
-    ) -> RetrievalBundle:
+    def search_with_pools(self, query: str, top_k: int = 5, pool_size: int | None = None) -> RetrievalBundle:
         bm25_scores = self.bm25.get_scores(_tokenize(query))
         bm25_ranked = np.argsort(bm25_scores)[::-1]
 

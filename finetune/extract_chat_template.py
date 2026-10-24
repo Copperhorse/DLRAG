@@ -1,7 +1,8 @@
 """Extract the chat template embedded in a GGUF so training uses exactly what llama-server uses.
 
-    uv run --with gguf python finetune/extract_chat_template.py ~/models/Sharp-MiniCPM5-2B-Q8_K_M.gguf
+uv run --with gguf python finetune/extract_chat_template.py ~/models/Sharp-MiniCPM5-2B-Q8_K_M.gguf
 """
+
 from __future__ import annotations
 
 import argparse

@@ -1,4 +1,5 @@
 """Book-derived coding tasks: loading and candidate-code extraction."""
+
 from __future__ import annotations
 
 import hashlib
@@ -26,7 +27,7 @@ class Task:
     source: str
     spec: str
     dir: Path
-    needs_repo: bool = False   # tests import the companion repo's own code (it is put on PYTHONPATH)
+    needs_repo: bool = False  # tests import the companion repo's own code (it is put on PYTHONPATH)
 
     @property
     def prompt(self) -> str:
@@ -45,11 +46,16 @@ def load_tasks(root: Path = DEFAULT_TASKS_DIR, ids: list[str] | None = None) -> 
         meta = json.loads((d / "task.json").read_text(encoding="utf-8"))
         if ids and not any(meta["id"].startswith(i) for i in ids):
             continue
-        tasks.append(Task(
-            id=meta["id"], tier=meta["tier"], source=meta["source"],
-            spec=(d / "prompt.md").read_text(encoding="utf-8").strip(), dir=d,
-            needs_repo=bool(meta.get("needs_repo", False)),
-        ))
+        tasks.append(
+            Task(
+                id=meta["id"],
+                tier=meta["tier"],
+                source=meta["source"],
+                spec=(d / "prompt.md").read_text(encoding="utf-8").strip(),
+                dir=d,
+                needs_repo=bool(meta.get("needs_repo", False)),
+            )
+        )
     return tasks
 
 
@@ -84,4 +90,6 @@ def verify_manifest(root: Path) -> list[str]:
         return ["no manifest"]
     want = m.read_text().splitlines()
     have = _manifest_lines(root)
-    return [f"changed/added: {x}" for x in have if x not in want] + [f"changed/removed: {x}" for x in want if x not in have]
+    return [f"changed/added: {x}" for x in have if x not in want] + [
+        f"changed/removed: {x}" for x in want if x not in have
+    ]

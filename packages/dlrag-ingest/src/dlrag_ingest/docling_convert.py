@@ -16,6 +16,7 @@ Device strategy
   ingestion.
 * device='cuda'|'cpu' pins the choice explicitly.
 """
+
 from __future__ import annotations
 
 import gc
@@ -34,6 +35,7 @@ class ParseError(RuntimeError):
 def _torch_cuda_available() -> bool:
     try:
         import torch
+
         return bool(torch.cuda.is_available())
     except Exception:
         return False
@@ -41,6 +43,7 @@ def _torch_cuda_available() -> bool:
 
 def _resolve_device(device_pref: str):
     from docling.datamodel.pipeline_options import AcceleratorDevice
+
     if device_pref in ("cuda", "gpu"):
         return AcceleratorDevice.CUDA
     if device_pref == "cpu":
@@ -50,6 +53,7 @@ def _resolve_device(device_pref: str):
 
 def _cpu_device():
     from docling.datamodel.pipeline_options import AcceleratorDevice
+
     return AcceleratorDevice.CPU
 
 
@@ -59,6 +63,7 @@ def _preload_onnxruntime_cuda() -> None:
     with "dlopen failed for libcudnn.so" - and Docling logs it and moves on."""
     try:
         import onnxruntime
+
         onnxruntime.preload_dlls()
     except Exception as exc:  # CPU-only onnxruntime, or no CUDA libs: OCR stays on the CPU
         logger.warning("[Docling] Could not preload onnxruntime CUDA libs (%s); OCR will use the CPU.", exc)
@@ -73,23 +78,22 @@ def _build_converter(device, threads: int, code_enrichment: bool = True):
         from docling.datamodel.pipeline_options import AcceleratorOptions, PdfPipelineOptions
         from docling.pipeline.standard_pdf_pipeline import StandardPdfPipeline
     except ImportError as exc:
-        raise ParseError(
-            "Docling is required for PDF conversion. Install it with: pip install docling"
-        ) from exc
+        raise ParseError("Docling is required for PDF conversion. Install it with: pip install docling") from exc
 
     pipeline_options = PdfPipelineOptions()
     pipeline_options.accelerator_options = AcceleratorOptions(device=device, num_threads=threads)
     # Without this the PDF's code listings come out flattened onto one line (with listing line numbers).
     pipeline_options.do_code_enrichment = code_enrichment
-    return DocumentConverter(format_options={
-        InputFormat.PDF: PdfFormatOption(
-            pipeline_cls=StandardPdfPipeline, pipeline_options=pipeline_options
-        )
-    })
+    return DocumentConverter(
+        format_options={
+            InputFormat.PDF: PdfFormatOption(pipeline_cls=StandardPdfPipeline, pipeline_options=pipeline_options)
+        }
+    )
 
 
 def _page_count(pdf_path: Path) -> int:
     import pypdfium2 as pdfium  # installed with docling
+
     pdf = pdfium.PdfDocument(str(pdf_path))
     try:
         return len(pdf)
@@ -97,9 +101,14 @@ def _page_count(pdf_path: Path) -> int:
         pdf.close()
 
 
-def convert_to_markdown(pdf_path: Path, device_pref: str, threads: int,
-                        code_enrichment: bool = True, batch_pages: int = 50,
-                        cache_dir: Path | None = None) -> tuple[str, str]:
+def convert_to_markdown(
+    pdf_path: Path,
+    device_pref: str,
+    threads: int,
+    code_enrichment: bool = True,
+    batch_pages: int = 50,
+    cache_dir: Path | None = None,
+) -> tuple[str, str]:
     """Convert a PDF to Markdown in page batches, retrying on CPU if CUDA conversion fails.
 
     Batches give progress/ETA logging and, with ``cache_dir``, resumability: every finished batch is written
@@ -112,8 +121,13 @@ def convert_to_markdown(pdf_path: Path, device_pref: str, threads: int,
     device = _resolve_device(device_pref)
     n_pages = _page_count(pdf_path)
     step = batch_pages if batch_pages and batch_pages > 0 else n_pages
-    manifest = {"pdf": Path(pdf_path).name, "size": Path(pdf_path).stat().st_size, "pages": n_pages,
-                "batch_pages": step, "code_enrichment": code_enrichment}
+    manifest = {
+        "pdf": Path(pdf_path).name,
+        "size": Path(pdf_path).stat().st_size,
+        "pages": n_pages,
+        "batch_pages": step,
+        "code_enrichment": code_enrichment,
+    }
 
     if cache_dir is not None:
         cache_dir = Path(cache_dir)
@@ -152,8 +166,15 @@ def convert_to_markdown(pdf_path: Path, device_pref: str, threads: int,
         parts.append(markdown)
         converted_pages += end - start + 1
         rate = (time.time() - t_start) / converted_pages
-        logger.info("[Docling] pages %d-%d/%d done in %.0fs (avg %.1fs/page, ETA %.0f min)",
-                    start, end, n_pages, time.time() - t0, rate, rate * (n_pages - end) / 60)
+        logger.info(
+            "[Docling] pages %d-%d/%d done in %.0fs (avg %.1fs/page, ETA %.0f min)",
+            start,
+            end,
+            n_pages,
+            time.time() - t0,
+            rate,
+            rate * (n_pages - end) / 60,
+        )
         gc.collect()
 
     device_name = str(device).split(".")[-1].lower()

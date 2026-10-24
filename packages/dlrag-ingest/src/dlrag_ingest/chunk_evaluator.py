@@ -5,6 +5,7 @@ references, and other non-content chunks. Wired into IngestionPipeline via
 `filter_chunks()`, which actually drops rejected chunks rather than just
 tagging them.
 """
+
 from __future__ import annotations
 
 import logging
@@ -52,9 +53,7 @@ class ChunkEvaluator:
             "toc_dots": re.compile(r"\.{3,}\s*\d{1,4}(?:\s*\|)?$"),
             "url": re.compile(r"https?://|www\."),
             "doi": re.compile(r"doi:10\.\d{4,9}/"),
-            "code_block": re.compile(
-                r"def\s+\w+\(|import\s+\w+|class\s+\w+:|const\s+\w+\s*=|function\s+\w+\("
-            ),
+            "code_block": re.compile(r"def\s+\w+\(|import\s+\w+|class\s+\w+:|const\s+\w+\s*=|function\s+\w+\("),
         }
 
         self.logger = logging.getLogger(__name__)
@@ -63,9 +62,7 @@ class ChunkEvaluator:
         if not self.logger.handlers:
             handler = logging.StreamHandler()
             handler.setLevel(log_level)
-            formatter = logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
 
@@ -89,9 +86,7 @@ class ChunkEvaluator:
         text_lower = text.lower()
         lines = text.splitlines()
         stripped_lines = [line.strip().rstrip("|").strip() for line in lines]
-        toc_patterns = sum(
-            1 for line in stripped_lines if self.patterns["toc_dots"].search(line)
-        )
+        toc_patterns = sum(1 for line in stripped_lines if self.patterns["toc_dots"].search(line))
         toc_keywords = "table of contents" in text_lower[:400]
         return toc_patterns > 3 or toc_keywords
 
@@ -111,9 +106,7 @@ class ChunkEvaluator:
             return self._result(False, "Forbidden prefix", "other", 0)
 
         if len(text) < 150:
-            if self.patterns["url"].search(text_lower) or self.patterns["doi"].search(
-                text_lower
-            ):
+            if self.patterns["url"].search(text_lower) or self.patterns["doi"].search(text_lower):
                 return self._result(False, "Citation/Link chunk", "metadata", 0)
 
         if any(ex in text_lower[:400] for ex in self.content_anywhere_excludes):
@@ -148,9 +141,7 @@ class ChunkEvaluator:
         quality_score = self._calculate_quality_score(text, metadata, alpha_ratio)
         return self._result(True, "OK", "main_content", quality_score)
 
-    def _result(
-        self, should_use: bool, reason: str, c_type: str, score: float
-    ) -> dict[str, Any]:
+    def _result(self, should_use: bool, reason: str, c_type: str, score: float) -> dict[str, Any]:
         if not should_use:
             self.logger.debug(f"Excluded: {reason}")
         return {
@@ -160,9 +151,7 @@ class ChunkEvaluator:
             "quality_score": score,
         }
 
-    def _calculate_quality_score(
-        self, text: str, metadata: dict[str, Any], alpha_ratio: float
-    ) -> float:
+    def _calculate_quality_score(self, text: str, metadata: dict[str, Any], alpha_ratio: float) -> float:
         score = 50
         text_len = len(text)
 

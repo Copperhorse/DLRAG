@@ -1,4 +1,5 @@
 """Evaluate retrieval quality against section headers with normalized matching."""
+
 from __future__ import annotations
 
 import argparse
@@ -52,10 +53,7 @@ def evaluate(
 
     # Create a fast lookup for chunk_id -> section_header
     # using the chunks stored on the index.
-    chunk_to_header = {
-        chunk.chunk_id: chunk.section_header
-        for chunk in index.chunks
-    }
+    chunk_to_header = {chunk.chunk_id: chunk.section_header for chunk in index.chunks}
 
     for item in benchmark:
         query = item["query"]
@@ -65,9 +63,7 @@ def evaluate(
         bundle = index.search_with_pools(query, top_k=top_k)
 
         # 1. Extract fused headers directly from the SearchHit objects
-        retrieved_headers = [
-            h.section_header for h in bundle.hits if h.section_header is not None
-        ]
+        retrieved_headers = [h.section_header for h in bundle.hits if h.section_header is not None]
 
         # 2. Extract true independent BM25 top-K headers using the lookup
         bm25_headers = [
@@ -116,20 +112,22 @@ def evaluate(
         dense_mrr = 1.0 / dense_first if dense_first else 0.0
         recall = 1.0 if has_hit else 0.0
 
-        results.append({
-            "id": item.get("id"),
-            "query": query,
-            "first_relevant_rank": fused_first,
-            "bm25_first_relevant_rank": bm25_first,
-            "dense_first_relevant_rank": dense_first,
-            "attribution": attribution,
-            "lost_to_fusion": lost_to_fusion,
-            f"recall@{top_k}": recall,
-            "mrr": mrr,
-            "bm25_mrr@k": bm25_mrr,
-            "dense_mrr@k": dense_mrr,
-            "retrieved_headers": retrieved_headers,
-        })
+        results.append(
+            {
+                "id": item.get("id"),
+                "query": query,
+                "first_relevant_rank": fused_first,
+                "bm25_first_relevant_rank": bm25_first,
+                "dense_first_relevant_rank": dense_first,
+                "attribution": attribution,
+                "lost_to_fusion": lost_to_fusion,
+                f"recall@{top_k}": recall,
+                "mrr": mrr,
+                "bm25_mrr@k": bm25_mrr,
+                "dense_mrr@k": dense_mrr,
+                "retrieved_headers": retrieved_headers,
+            }
+        )
 
     n = len(results)
     if n == 0:

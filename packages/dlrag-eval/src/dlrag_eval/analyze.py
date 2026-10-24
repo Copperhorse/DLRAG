@@ -2,6 +2,7 @@
 
 Primary: pass_all of agent-rag-repo minus rag-repo, per task averages paired by task, 95% bootstrap CI over tasks.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -20,8 +21,11 @@ PAIRS = [  # (a, b, role)
     ("rag-repo", "rag", "secondary (repo map for one-shot)"),
     ("agent-scratch", "rag-repo", "secondary"),
     ("agent-scratch", "agent-rag-repo", "secondary (pre-retrieval for agents)"),
-    ("rag", "plain", "vs plain"), ("rag-repo", "plain", "vs plain"), ("agent-rag", "plain", "vs plain"),
-    ("agent-rag-repo", "plain", "vs plain"), ("agent-scratch", "plain", "vs plain"),
+    ("rag", "plain", "vs plain"),
+    ("rag-repo", "plain", "vs plain"),
+    ("agent-rag", "plain", "vs plain"),
+    ("agent-rag-repo", "plain", "vs plain"),
+    ("agent-scratch", "plain", "vs plain"),
 ]
 
 
@@ -51,9 +55,18 @@ def main() -> None:
     ap.add_argument("--tasks-dir", type=Path, default=Path("data/tasks_test"))
     ap.add_argument("--samples", type=int, default=5)
     ap.add_argument("--arms", nargs="+", default=None, help="restrict to these arms (default: all six)")
-    ap.add_argument("--compare-with", type=Path, default=None,
-                    help="results dir of another model run on the same tasks/arms: adds paired (this - other) differences per arm")
-    ap.add_argument("--other-samples", type=int, default=None, help="samples per task in the compared run (default: same as --samples)")
+    ap.add_argument(
+        "--compare-with",
+        type=Path,
+        default=None,
+        help="results dir of another model run on the same tasks/arms: adds paired (this - other) differences per arm",
+    )
+    ap.add_argument(
+        "--other-samples",
+        type=int,
+        default=None,
+        help="samples per task in the compared run (default: same as --samples)",
+    )
     ap.add_argument("--this", default="this model", help="name of this model in the cross-model table")
     ap.add_argument("--other", default="other model", help="name of the other model in the cross-model table")
     args = ap.parse_args()
@@ -74,14 +87,19 @@ def main() -> None:
     PB = {a: per_task(rows, "pass_behavior") for a, rows in data.items()}
 
     print("### Main table (24 test tasks x 5 samples)\n")
-    print("| arm | runs | all tests pass | 95% CI (over tasks) | behaviour pass | tokens/run | sec/run | tool calls/run | needed 2nd request | errors |")
+    print(
+        "| arm | runs | all tests pass | 95% CI (over tasks) | behaviour pass | tokens/run | sec/run | tool calls/run | needed 2nd request | errors |"
+    )
     print("|---|---|---|---|---|---|---|---|---|---|")
     for a in ARMS:
-        rows = data[a]; n = len(rows)
+        rows = data[a]
+        n = len(rows)
         lo, hi = bootstrap(lambda s, a=a: sum(PT[a][t] for t in s) / len(s), ids)
-        print(f"| `{a}` | {n} | {100 * sum(PT[a].values()) / len(ids):.1f}% | {100 * lo:.1f} - {100 * hi:.1f} | {100 * sum(PB[a].values()) / len(ids):.1f}% | "
-              f"{sum(r['input_tokens'] + r['output_tokens'] for r in rows) / n:.0f} | {sum(r['duration'] for r in rows) / n:.1f} | "
-              f"{sum(len(r['tool_calls']) for r in rows) / n:.2f} | {100 * sum(bool(r.get('forced_final')) for r in rows) / n:.0f}% | {sum(bool(r['error']) for r in rows)} |")
+        print(
+            f"| `{a}` | {n} | {100 * sum(PT[a].values()) / len(ids):.1f}% | {100 * lo:.1f} - {100 * hi:.1f} | {100 * sum(PB[a].values()) / len(ids):.1f}% | "
+            f"{sum(r['input_tokens'] + r['output_tokens'] for r in rows) / n:.0f} | {sum(r['duration'] for r in rows) / n:.1f} | "
+            f"{sum(len(r['tool_calls']) for r in rows) / n:.2f} | {100 * sum(bool(r.get('forced_final')) for r in rows) / n:.0f}% | {sum(bool(r['error']) for r in rows)} |"
+        )
 
     print("\n### By tier (all tests pass)\n")
     print("| arm | recall (8 tasks) | transfer (8) | explore (8) |\n|---|---|---|---|")
@@ -97,7 +115,9 @@ def main() -> None:
     for a, b, role in PAIRS:
         f = lambda s, a=a, b=b: sum(PT[a][t] - PT[b][t] for t in s) / len(s)
         lo, hi = bootstrap(f, ids)
-        print(f"| `{a}` - `{b}` | {role} | {100 * f(ids):+.1f} | {100 * lo:+.1f} to {100 * hi:+.1f} | {'yes' if lo > 0 or hi < 0 else 'no'} |")
+        print(
+            f"| `{a}` - `{b}` | {role} | {100 * f(ids):+.1f} | {100 * lo:+.1f} to {100 * hi:+.1f} | {'yes' if lo > 0 or hi < 0 else 'no'} |"
+        )
 
     print("\n### Per task (all tests pass, k of 5 samples)\n")
     print("| task | tier | " + " | ".join(f"`{a}`" for a in ARMS) + " |\n|---|---|" + "---|" * len(ARMS))
@@ -107,27 +127,42 @@ def main() -> None:
     print(f"\nUnsolved by every arm: {', '.join(unsolved) or 'none'}")
 
     print("\n### Failure anatomy (share of runs)\n")
-    print("| arm | no code block | import/collection failure | behaviour ok, a convention wrong | all pass |\n|---|---|---|---|---|")
+    print(
+        "| arm | no code block | import/collection failure | behaviour ok, a convention wrong | all pass |\n|---|---|---|---|---|"
+    )
     for a in ARMS:
-        rows = data[a]; n = len(rows)
-        nocode = sum(not r["code"] for r in rows); imp = sum(1 for r in rows if r["code"] and not r["passed"])
+        rows = data[a]
+        n = len(rows)
+        nocode = sum(not r["code"] for r in rows)
+        imp = sum(1 for r in rows if r["code"] and not r["passed"])
         conv = sum(1 for r in rows if r["pass_behavior"] and not r["pass_all"])
-        print(f"| `{a}` | {100 * nocode / n:.1f}% | {100 * imp / n:.1f}% | {100 * conv / n:.1f}% | {100 * sum(bool(r['pass_all']) for r in rows) / n:.1f}% |")
+        print(
+            f"| `{a}` | {100 * nocode / n:.1f}% | {100 * imp / n:.1f}% | {100 * conv / n:.1f}% | {100 * sum(bool(r['pass_all']) for r in rows) / n:.1f}% |"
+        )
 
-    thinking = sum(1 for rows in data.values() for r in rows if "<think" in (r["response"] or "") or "</think" in (r["response"] or ""))
-    print(f"\nThinking tags found in replies: {thinking} of {sum(len(v) for v in data.values())} runs (must be 0: thinking is returned separately, never in the reply text)")
+    thinking = sum(
+        1
+        for rows in data.values()
+        for r in rows
+        if "<think" in (r["response"] or "") or "</think" in (r["response"] or "")
+    )
+    print(
+        f"\nThinking tags found in replies: {thinking} of {sum(len(v) for v in data.values())} runs (must be 0: thinking is returned separately, never in the reply text)"
+    )
 
     agent_arms = [a for a in ("agent-rag", "agent-rag-repo", "agent-scratch") if a in data]
     if agent_arms:
         print("\n### Tool use (agent arms)\n")
     for a in agent_arms:
-        rows = data[a]; calls = [len(r["tool_calls"]) for r in rows]
+        rows = data[a]
+        calls = [len(r["tool_calls"]) for r in rows]
         names = defaultdict(int)
         for r in rows:
             for t in r["tool_calls"]:
                 names[t["name"]] += 1
-        print(f"- `{a}`: {sum(calls) / len(calls):.2f} calls/run, {100 * sum(c == 0 for c in calls) / len(calls):.0f}% of runs used no tool, calls by tool {dict(names)}")
-
+        print(
+            f"- `{a}`: {sum(calls) / len(calls):.2f} calls/run, {100 * sum(c == 0 for c in calls) / len(calls):.0f}% of runs used no tool, calls by tool {dict(names)}"
+        )
 
     if args.compare_with is not None:
         other = {a: load_arm(args.compare_with, a) for a in ARMS}
@@ -135,20 +170,29 @@ def main() -> None:
             assert len(rows) == len(ids) * (args.other_samples or args.samples), f"{a} (other): {len(rows)} rows"
         OT = {a: per_task(rows) for a, rows in other.items()}
         OB = {a: per_task(rows, "pass_behavior") for a, rows in other.items()}
-        print(f"\n### Comparison: {args.this} minus {args.other}, same tasks and arms (percentage points, paired by task, 95% bootstrap CI over the 24 tasks)\n")
-        print(f"| arm | {args.this} all pass | {args.other} all pass | difference (all pass) | 95% CI | excludes 0? | {args.this} behaviour | {args.other} behaviour | difference (behaviour) | 95% CI |")
+        print(
+            f"\n### Comparison: {args.this} minus {args.other}, same tasks and arms (percentage points, paired by task, 95% bootstrap CI over the 24 tasks)\n"
+        )
+        print(
+            f"| arm | {args.this} all pass | {args.other} all pass | difference (all pass) | 95% CI | excludes 0? | {args.this} behaviour | {args.other} behaviour | difference (behaviour) | 95% CI |"
+        )
         print("|---|---|---|---|---|---|---|---|---|---|")
         for a in ARMS:
             f = lambda s, a=a: sum(PT[a][t] - OT[a][t] for t in s) / len(s)
             g = lambda s, a=a: sum(PB[a][t] - OB[a][t] for t in s) / len(s)
-            lo, hi = bootstrap(f, ids); lo2, hi2 = bootstrap(g, ids)
-            print(f"| `{a}` | {100 * sum(PT[a].values()) / len(ids):.1f}% | {100 * sum(OT[a].values()) / len(ids):.1f}% | {100 * f(ids):+.1f} | {100 * lo:+.1f} to {100 * hi:+.1f} | {'yes' if lo > 0 or hi < 0 else 'no'} | "
-                  f"{100 * sum(PB[a].values()) / len(ids):.1f}% | {100 * sum(OB[a].values()) / len(ids):.1f}% | {100 * g(ids):+.1f} | {100 * lo2:+.1f} to {100 * hi2:+.1f} |")
+            lo, hi = bootstrap(f, ids)
+            lo2, hi2 = bootstrap(g, ids)
+            print(
+                f"| `{a}` | {100 * sum(PT[a].values()) / len(ids):.1f}% | {100 * sum(OT[a].values()) / len(ids):.1f}% | {100 * f(ids):+.1f} | {100 * lo:+.1f} to {100 * hi:+.1f} | {'yes' if lo > 0 or hi < 0 else 'no'} | "
+                f"{100 * sum(PB[a].values()) / len(ids):.1f}% | {100 * sum(OB[a].values()) / len(ids):.1f}% | {100 * g(ids):+.1f} | {100 * lo2:+.1f} to {100 * hi2:+.1f} |"
+            )
         print(f"\nTokens and seconds per run, {args.this} vs {args.other}:\n")
         print("| arm | tokens (this) | tokens (other) | sec/run (this) | sec/run (other) |\n|---|---|---|---|---|")
         for a in ARMS:
-            t1 = sum(r["input_tokens"] + r["output_tokens"] for r in data[a]) / len(data[a]); t2 = sum(r["input_tokens"] + r["output_tokens"] for r in other[a]) / len(other[a])
-            d1 = sum(r["duration"] for r in data[a]) / len(data[a]); d2 = sum(r["duration"] for r in other[a]) / len(other[a])
+            t1 = sum(r["input_tokens"] + r["output_tokens"] for r in data[a]) / len(data[a])
+            t2 = sum(r["input_tokens"] + r["output_tokens"] for r in other[a]) / len(other[a])
+            d1 = sum(r["duration"] for r in data[a]) / len(data[a])
+            d2 = sum(r["duration"] for r in other[a]) / len(other[a])
             print(f"| `{a}` | {t1:.0f} | {t2:.0f} | {d1:.1f} | {d2:.1f} |")
 
 

@@ -1,4 +1,5 @@
 """`dlrag-tasks validate`: references must pass every test, an empty stub must fail."""
+
 from __future__ import annotations
 
 import argparse
@@ -12,12 +13,18 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--tasks-dir", type=Path, default=DEFAULT_TASKS_DIR)
     ap.add_argument("ids", nargs="*", help="task id prefixes (default: all)")
-    ap.add_argument("--write-manifest", action="store_true", help="freeze the directory: write MANIFEST.sha256 (after validating)")
+    ap.add_argument(
+        "--write-manifest", action="store_true", help="freeze the directory: write MANIFEST.sha256 (after validating)"
+    )
     ap.add_argument("--verify-manifest", action="store_true", help="check the directory against its MANIFEST.sha256")
     args = ap.parse_args()
     if args.verify_manifest:
         diff = verify_manifest(args.tasks_dir)
-        print("manifest OK: task directory untouched since it was frozen" if not diff else "MANIFEST MISMATCH:\n  " + "\n  ".join(diff))
+        print(
+            "manifest OK: task directory untouched since it was frozen"
+            if not diff
+            else "MANIFEST MISMATCH:\n  " + "\n  ".join(diff)
+        )
         raise SystemExit(1 if diff else 0)
 
     bad = 0
@@ -29,10 +36,12 @@ def main() -> None:
         ok = ref.pass_all and not stub.pass_all and n_beh >= 1 and n_conv >= 1
         bad += not ok
         failing = [k for k, v in ref.passed.items() if not v]
-        print(f"{'OK  ' if ok else 'FAIL'} {t.id:<28} tests={len(ref.passed)} (behavior {n_beh}/convention {n_conv})"
-              + (f" ref-failing={failing}" if failing else "")
-              + (f" ref-error={ref.error}" if ref.error else "")
-              + (" stub-passes!" if stub.pass_all else ""))
+        print(
+            f"{'OK  ' if ok else 'FAIL'} {t.id:<28} tests={len(ref.passed)} (behavior {n_beh}/convention {n_conv})"
+            + (f" ref-failing={failing}" if failing else "")
+            + (f" ref-error={ref.error}" if ref.error else "")
+            + (" stub-passes!" if stub.pass_all else "")
+        )
     if args.write_manifest and not bad:
         print("manifest written, sha256 of the manifest:", write_manifest(args.tasks_dir))
     raise SystemExit(1 if bad else 0)

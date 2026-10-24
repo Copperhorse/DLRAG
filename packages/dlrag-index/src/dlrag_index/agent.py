@@ -1,4 +1,5 @@
 """Agent-facing facade over a persisted (or in-memory) index."""
+
 from __future__ import annotations
 
 import json
@@ -11,7 +12,7 @@ TOOL_SCHEMAS = [
     {
         "name": "book_search",
         "description": "Hybrid (BM25 + Dense) search over the book's chunks. "
-                       "Returns headers, scores, repo links and code assets.",
+        "Returns headers, scores, repo links and code assets.",
         "parameters": {
             "type": "object",
             "properties": {
@@ -39,9 +40,9 @@ TOOL_SCHEMAS = [
 class AgenticIndex:
     """Tool surface for the coding agent. Usable in-process or from disk."""
 
-    def __init__(self, engine: HybridSearchEngine | None = None,
-                 artifacts_dir: Path | None = None,
-                 repo_dir: Path | None = None):
+    def __init__(
+        self, engine: HybridSearchEngine | None = None, artifacts_dir: Path | None = None, repo_dir: Path | None = None
+    ):
         if engine is None:
             if artifacts_dir is None:
                 raise ValueError("Provide either an engine or an artifacts_dir.")

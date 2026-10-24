@@ -9,6 +9,7 @@ Original docstring: the experiment arms, all backed by the same llama-server mod
 ``rag``    - one-shot RAG: top-k book chunks are pre-retrieved and put in the prompt.
 ``agent``  - Agno agent that calls book/repo tools itself (arms B / D).
 """
+
 from __future__ import annotations
 
 import functools
@@ -33,7 +34,7 @@ from dlrag_index import AgenticIndex  # noqa: E402
 
 ARMS = ("plain", "rag", "rag-repo", "agent-book", "agent")
 AGENT_ARMS = ("agent-book", "agent")
-TOOL_RESULT_CAP = 5000   # chars per tool result; keeps a multi-call run inside the context window
+TOOL_RESULT_CAP = 5000  # chars per tool result; keeps a multi-call run inside the context window
 
 BASE_INSTRUCTIONS = (
     "You are an expert PyTorch engineer. Write correct, idiomatic Python. "
@@ -57,31 +58,38 @@ AGENT_INSTRUCTIONS = BASE_INSTRUCTIONS + (
 @dataclass
 class ModelConfig:
     base_url: str = "http://localhost:8080/v1"
-    model_id: str = "sharp-minicpm5-2b"      # llama-server ignores it
-    temperature: float = 1.0                 # model-card sampling defaults
+    model_id: str = "sharp-minicpm5-2b"  # llama-server ignores it
+    temperature: float = 1.0  # model-card sampling defaults
     top_p: float = 0.95
     top_k: int = 20
     max_tokens: int = 3072
-    thinking: bool = False                   # Sharp template's <think> mode; off = fast, fits 3K tokens
+    thinking: bool = False  # Sharp template's <think> mode; off = fast, fits 3K tokens
     timeout: float = 600.0
 
 
 @dataclass
 class ArmResult:
     text: str
-    tool_calls: list[dict] = field(default_factory=list)   # [{name, args, error}]
+    tool_calls: list[dict] = field(default_factory=list)  # [{name, args, error}]
     input_tokens: int = 0
     output_tokens: int = 0
     duration: float = 0.0
     error: str | None = None
-    forced_final: bool = False   # the agent never produced code; a tool-free final answer was requested from its evidence
+    forced_final: bool = (
+        False  # the agent never produced code; a tool-free final answer was requested from its evidence
+    )
 
 
 def build_model(cfg: ModelConfig) -> OpenAILike:
     return OpenAILike(
-        id=cfg.model_id, base_url=cfg.base_url, api_key="none",
-        temperature=cfg.temperature, top_p=cfg.top_p, max_tokens=cfg.max_tokens,
-        extra_body={"top_k": cfg.top_k, "chat_template_kwargs": {"enable_thinking": cfg.thinking}}, timeout=cfg.timeout,
+        id=cfg.model_id,
+        base_url=cfg.base_url,
+        api_key="none",
+        temperature=cfg.temperature,
+        top_p=cfg.top_p,
+        max_tokens=cfg.max_tokens,
+        extra_body={"top_k": cfg.top_k, "chat_template_kwargs": {"enable_thinking": cfg.thinking}},
+        timeout=cfg.timeout,
     )
 
 
@@ -113,8 +121,7 @@ def _cap(text: str) -> str:
     return text if len(text) <= TOOL_RESULT_CAP else text[:TOOL_RESULT_CAP] + ' ...[truncated]"}'
 
 
-def make_tools(index: AgenticIndex, max_calls: int | None = None, grace: int = 3,
-               repo: bool = True) -> list[Callable]:
+def make_tools(index: AgenticIndex, max_calls: int | None = None, grace: int = 3, repo: bool = True) -> list[Callable]:
     """Plain functions (name, type hints and docstring become the tool schema).
 
     Agno's own ``tool_call_limit`` never invokes the tool again once reached, so a small model that keeps
@@ -130,9 +137,12 @@ def make_tools(index: AgenticIndex, max_calls: int | None = None, grace: int = 3
             if max_calls is not None and calls["n"] > max_calls:
                 if calls["n"] > max_calls + grace:
                     raise StopAgentRun("tool-call loop: model ignored the tool-call limit")
-                return ("TOOL-CALL LIMIT REACHED. Do not call any more tools. "
-                        "Write your final answer now as one complete Python code block.")
+                return (
+                    "TOOL-CALL LIMIT REACHED. Do not call any more tools. "
+                    "Write your final answer now as one complete Python code block."
+                )
             return fn(*a, **kw)
+
         return wrapper
 
     def book_search(query: str, top_k: int = 3) -> str:
@@ -163,32 +173,48 @@ def make_tools(index: AgenticIndex, max_calls: int | None = None, grace: int = 3
 
 
 class Arm:
-    def __init__(self, name: str, cfg: ModelConfig, index: AgenticIndex | None = None,
-                 rag_top_k: int = 3, max_tool_calls: int = 8, run_timeout: float = 240.0,
-                 force_final: bool = False):
+    def __init__(
+        self,
+        name: str,
+        cfg: ModelConfig,
+        index: AgenticIndex | None = None,
+        rag_top_k: int = 3,
+        max_tool_calls: int = 8,
+        run_timeout: float = 240.0,
+        force_final: bool = False,
+    ):
         if name not in ARMS:
             raise ValueError(f"Unknown arm {name!r}; choose from {ARMS}")
         if name != "plain" and index is None:
             raise ValueError(f"Arm {name!r} needs an index")
         self.name, self.cfg, self.index = name, cfg, index
         self.rag_top_k, self.max_tool_calls = rag_top_k, max_tool_calls
-        self.force_final = force_final   # agent arms: if no code came out, ask once more without tools
-        self.run_timeout = run_timeout   # wall-clock cap per run (agent arms); a run once stalled for 94 min
+        self.force_final = force_final  # agent arms: if no code came out, ask once more without tools
+        self.run_timeout = run_timeout  # wall-clock cap per run (agent arms); a run once stalled for 94 min
 
     def _agent(self) -> Agent:
-        tools = (make_tools(self.index, max_calls=self.max_tool_calls, repo=self.name == "agent")
-                 if self.name in AGENT_ARMS else None)
-        instructions = {"agent": AGENT_INSTRUCTIONS, "agent-book": AGENT_BOOK_INSTRUCTIONS}.get(self.name, BASE_INSTRUCTIONS)
+        tools = (
+            make_tools(self.index, max_calls=self.max_tool_calls, repo=self.name == "agent")
+            if self.name in AGENT_ARMS
+            else None
+        )
+        instructions = {"agent": AGENT_INSTRUCTIONS, "agent-book": AGENT_BOOK_INSTRUCTIONS}.get(
+            self.name, BASE_INSTRUCTIONS
+        )
         return Agent(
-            model=build_model(self.cfg), tools=tools, instructions=instructions,
-            markdown=False, telemetry=False, retries=0,
+            model=build_model(self.cfg),
+            tools=tools,
+            instructions=instructions,
+            markdown=False,
+            telemetry=False,
+            retries=0,
         )
 
     def _rag_context(self, query: str) -> str:
         hits = self.index.engine.search(query, top_k=self.rag_top_k)
         parts = [f"### {h.section_header}\n{h.content[:1500]}" for h in hits]
         text = "Reference passages from the book (they may or may not be relevant):\n\n" + "\n\n".join(parts)
-        if self.name == "rag-repo":   # one-shot counterpart of the agent's repo tools
+        if self.name == "rag-repo":  # one-shot counterpart of the agent's repo tools
             text += "\n\n" + self.index.repo.repo_map(latest_only=True, max_chars=9000)
         return text
 
@@ -208,9 +234,12 @@ class Arm:
             timer.cancel()
         m = out.metrics
         text = out.content if isinstance(out.content, str) else str(out.content or "")
-        calls = [{"name": t.tool_name, "args": t.tool_args, "error": bool(t.tool_call_error)} for t in (out.tools or [])]
+        calls = [
+            {"name": t.tool_name, "args": t.tool_args, "error": bool(t.tool_call_error)} for t in (out.tools or [])
+        ]
         result = ArmResult(
-            text=text, tool_calls=calls,
+            text=text,
+            tool_calls=calls,
             input_tokens=int(getattr(m, "input_tokens", 0) or 0),
             output_tokens=int(getattr(m, "output_tokens", 0) or 0),
             duration=time.time() - t0,
@@ -231,13 +260,16 @@ class Arm:
 
     def _force_final(self, result: ArmResult, prompt: str, evidence: str) -> None:
         """The agent ran out of budget without answering: one tool-free call with what it found."""
-        message = (f"{prompt}\n\n---\nYou already looked things up. Here is what the tools returned:\n\n{evidence}\n\n---\n"
-                   "Tool use is over. Using the information above, write your final answer now: "
-                   "one complete Python code block.")
+        message = (
+            f"{prompt}\n\n---\nYou already looked things up. Here is what the tools returned:\n\n{evidence}\n\n---\n"
+            "Tool use is over. Using the information above, write your final answer now: "
+            "one complete Python code block."
+        )
         t0 = time.time()
         try:
-            out = Agent(model=build_model(self.cfg), instructions=BASE_INSTRUCTIONS, markdown=False,
-                        telemetry=False, retries=0).run(message)
+            out = Agent(
+                model=build_model(self.cfg), instructions=BASE_INSTRUCTIONS, markdown=False, telemetry=False, retries=0
+            ).run(message)
         except Exception:
             return
         if out.status == RunStatus.error:
@@ -250,8 +282,9 @@ class Arm:
         result.duration += time.time() - t0
 
 
-def make_arm(name: str, cfg: ModelConfig | None = None, artifacts_dir: Path | None = None,
-             repo_dir: Path | None = None, **kw) -> Arm:
+def make_arm(
+    name: str, cfg: ModelConfig | None = None, artifacts_dir: Path | None = None, repo_dir: Path | None = None, **kw
+) -> Arm:
     cfg = cfg or ModelConfig()
     index = None
     if name != "plain":
